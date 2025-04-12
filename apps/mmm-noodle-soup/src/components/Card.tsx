@@ -32,14 +32,19 @@ const Description = ({ children }: React.PropsWithChildren) => {
 };
 
 const Image = ({ src, alt }: { src: string; alt: string }) => {
-  return <img className="float-start" src={src} alt={alt} />;
+  return <img src={src} alt={alt} />;
 };
 
 const Footer = ({ children }: React.PropsWithChildren) => {
   return <footer className="ps-4 pe-4">{children}</footer>;
 };
 
+const Content = ({ children }: React.PropsWithChildren) => {
+  return <div className="ps-4 pe-4">{children}</div>;
+};
+
 Card.Title = Title;
 Card.Description = Description;
 Card.Image = Image;
 Card.Footer = Footer;
+Card.Content = Content;

@@ -1,7 +1,8 @@
 export type Ingredient = {
-  amount: number;
-  unit?: string;
   name: string;
+  amount?: number;
+  unit?: string;
+  comment?: string;
 };
 
 export type GroupedIngredients = {
@@ -15,8 +16,9 @@ export type GroupedInstructions = {
 };
 
 export type Time = {
-  preparation: number;
-  cooking: number;
+  preparation?: number;
+  cooking?: number;
+  waiting?: number;
 };
 
 export type Metadata = {
@@ -27,18 +29,22 @@ export type Recipe = {
   id: string;
   title: string;
   description: string;
-  url: string;
+  source: string | URL;
+  image: URL;
   tags: string[];
   servingsCount: number;
   time: Time;
   metadata: Metadata;
   groupedIngredients: GroupedIngredients[];
   groupedInstructions: GroupedInstructions[];
+  publishedAt: Date;
+  updatedAt: Date;
+  author: string;
 };
 
 export type RecipeSummary = Pick<
   Recipe,
-  "id" | "title" | "description" | "tags" | "servingsCount" | "time" | "url"
+  "id" | "title" | "description" | "tags" | "servingsCount" | "time" | "image"
 >;
 
 export type PaginatedResponse<T> = {

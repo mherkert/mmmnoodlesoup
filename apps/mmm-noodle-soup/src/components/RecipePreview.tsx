@@ -1,27 +1,31 @@
 import React from "react";
 import { Card } from "./Card";
 import { RecipeSummary } from "../data/types";
-import classNames from "classnames";
 import { Link } from "gatsby";
 export type RecipePreviewProps = {
   recipe: RecipeSummary;
 };
 export const RecipePreview = ({
   recipe,
-
   ...props
 }: RecipePreviewProps & React.HTMLAttributes<HTMLDivElement>) => {
+  const preparation: number = recipe.time.preparation || 0;
+  const waiting: number = recipe.time.waiting || 0;
+  const cooking: number = recipe.time.cooking || 0;
+
   return (
-    <Card {...props}>
-      <Card.Image src={recipe.url} alt={recipe.title} />
-      <Card.Title>
-        <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link>
-      </Card.Title>
-      <Card.Description>{recipe.description}</Card.Description>
-      <Card.Footer>
-        <span>{recipe.servingsCount} servings</span>
-        <span>{recipe.time.preparation + recipe.time.cooking} min</span>
-      </Card.Footer>
-    </Card>
+    <Link to={`/recipes/${recipe.id}`}>
+      <Card {...props}>
+        <Card.Image src={recipe.image.toString()} alt={recipe.title} />
+        <Card.Title>
+          {recipe.title}
+        </Card.Title>
+        <Card.Description>{recipe.description}</Card.Description>
+        <Card.Footer>
+          <span>{recipe.servingsCount} servings</span>
+          <span>{preparation + waiting + cooking} min</span>
+        </Card.Footer>
+      </Card>
+    </Link>
   );
 };

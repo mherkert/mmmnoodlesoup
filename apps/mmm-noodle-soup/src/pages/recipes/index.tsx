@@ -1,5 +1,4 @@
 import React from "react";
-import { RecipeCard } from "../../components/RecipeCard";
 import { RecipePreview } from "../../components/RecipePreview";
 
 const recipes = [
@@ -7,12 +6,13 @@ const recipes = [
     id: "c1r2",
     title: "Banoffee Pie",
     description: "BananaDrama",
-    url: "https://redhousespice.com/wp-content/uploads/2022/11/chicken-noodle-soup-with-mushrooms-scaled.jpg",
+    image: new URL("https://redhousespice.com/wp-content/uploads/2022/11/chicken-noodle-soup-with-mushrooms-scaled.jpg"),
     tags: ["party"],
     servingsCount: 12,
     time: {
       preparation: 20,
       cooking: 60,
+      waiting: 0,
     },
     metadata: {
       measurementSystem: "METRIC",
@@ -44,7 +44,7 @@ const recipes = [
     id: "c1r3",
     title: "Chocolate Cake",
     description: "Classic chocolate cake",
-    url: "https://img.chefkoch-cdn.de/rezepte/1031841208350942/bilder/1537796/crop-642x428/kaiserschmarrn-tiroler-landgasthofrezept.jpg",
+    image: new URL("https://img.chefkoch-cdn.de/rezepte/1031841208350942/bilder/1537796/crop-642x428/kaiserschmarrn-tiroler-landgasthofrezept.jpg"),
     tags: ["dessert", "chocolate"],
     servingsCount: 8,
     time: {
@@ -79,7 +79,7 @@ const recipes = [
 
 const RecipesPage = () => {
   return (
-    <div className="p-8 flex gap-4">
+    <div className="flex gap-4">
       {recipes.map((recipe) => (
         <RecipePreview className="w-96" key={recipe.id} recipe={recipe} />
       ))}
