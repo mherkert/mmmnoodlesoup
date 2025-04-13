@@ -75,29 +75,10 @@ export const recipeType = defineType({
       description: 'Number of servings the recipe makes',
     }),
     defineField({
-      name: 'time',
-      title: 'Time',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'preparation',
-          type: 'number',
-          validation: (rule) => rule.positive().integer(),
-          description: 'Time in minutes to prepare the recipe',
-        }),
-        defineField({
-          name: 'cooking',
-          type: 'number',
-          validation: (rule) => rule.positive().integer(),
-          description: 'Time in minutes to cook the recipe',
-        }),
-        defineField({
-          name: 'waiting',
-          type: 'number',
-          validation: (rule) => rule.positive().integer(),
-          description: 'Time in minutes to wait for the recipe',
-        }),
-      ],
+      name: 'duration',
+      title: 'Duration',
+      type: 'recipeDuration',
+      description: 'The duration of the recipe',
     }),
     defineField({
       name: 'publishedAt',
@@ -121,86 +102,21 @@ export const recipeType = defineType({
       type: 'reference',
       to: [{type: 'user'}],
       validation: (rule) => rule.required(),
-      description: 'The user who created the recipe',
+      description: 'The user who uploaded the recipe',
     }),
     defineField({
       name: 'groupedIngredients',
       title: 'Grouped Ingredients',
       type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'title',
-              type: 'string',
-              validation: (rule) => rule.max(55),
-              description: 'The title of the grouped ingredients',
-            }),
-            defineField({
-              name: 'ingredients',
-              type: 'array',
-              of: [
-                {
-                  type: 'object',
-                  fields: [
-                    defineField({
-                      name: 'name',
-                      type: 'string',
-                      validation: (rule) => rule.required().max(55),
-                      description: 'The name of the ingredient',
-                    }),
-                    defineField({
-                      name: 'amount',
-                      type: 'number',
-                      validation: (rule) => rule.positive(),
-                      description: 'The amount of the ingredient',
-                    }),
-                    defineField({
-                      name: 'unit',
-                      type: 'string',
-                      validation: (rule) => rule.max(55),
-                      description: 'The unit of the ingredient',
-                    }),
-                    defineField({
-                      name: 'comment',
-                      type: 'string',
-                      validation: (rule) => rule.max(127),
-                      description: 'Comment for the ingredient',
-                    }),
-                  ],
-                },
-              ],
-              description: 'The ingredients for the recipe',
-            }),
-          ],
-        },
-      ],
+      of: [{type: 'recipeGroupedIngredients'}],
+      description: 'The ingredients needed for the recipe',
     }),
     defineField({
       name: 'groupedInstructions',
       title: 'Grouped Instructions',
       type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'title',
-              type: 'string',
-              validation: (rule) => rule.max(55),
-              description: 'The title of the grouped instructions',
-            }),
-            defineField({
-              name: 'instructions',
-              type: 'array',
-              of: [{type: 'text'}],
-              validation: (rule) => rule.max(2048),
-              description: 'The instructions for the recipe',
-            }),
-          ],
-        },
-      ],
+      of: [{type: 'recipeGroupedInstructions'}],
+      description: 'The instructions for the recipe',
     }),
   ],
   preview: {

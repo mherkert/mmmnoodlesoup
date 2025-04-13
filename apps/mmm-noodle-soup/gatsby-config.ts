@@ -17,16 +17,16 @@ const config: GatsbyConfig = {
     "gatsby-plugin-image",
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
-    // {
-    //   resolve: "gatsby-source-sanity",
-    //   options: {
-    //     projectId: "04qgrpgb", // TODO: consider changing name in sanity.io
-    //     dataset: "production",
-    //     watchMode: true, // only dev mode
-    //     apiVersion: "2021-03-25",
-    //     token: process.env.SANITY_TOKEN,
-    //   },
-    // },
+    {
+      resolve: "gatsby-source-sanity",
+      options: {
+        projectId: "04qgrpgb", // TODO: consider changing name in sanity.io
+        dataset: "production",
+        watchMode: true, // only dev mode
+        apiVersion: "2021-03-25",
+        token: process.env.SANITY_TOKEN,
+      },
+    },
   ],
 };
 
