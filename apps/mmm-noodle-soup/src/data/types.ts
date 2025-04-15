@@ -15,7 +15,7 @@ export type GroupedInstructions = {
   instructions: string[];
 };
 
-export type Time = {
+export type Duration = {
   preparation?: number;
   cooking?: number;
   waiting?: number;
@@ -25,26 +25,31 @@ export type Metadata = {
   measurementSystem: "METRIC" | "IMPERIAL";
 };
 
+export type Slug = {
+  current: string;
+};
+
 export type Recipe = {
   id: string;
   title: string;
+  slug: Slug;
   description: string;
   source: string | URL;
   image: URL;
   tags: string[];
   servingsCount: number;
-  time: Time;
+  duration: Duration;
   metadata: Metadata;
   groupedIngredients: GroupedIngredients[];
   groupedInstructions: GroupedInstructions[];
-  publishedAt: Date;
+  createdAt: Date;
   updatedAt: Date;
-  author: string;
+  user: string;
 };
 
 export type RecipeSummary = Pick<
   Recipe,
-  "id" | "title" | "description" | "tags" | "servingsCount" | "time" | "image"
+  "id" | "title" | "description" | "tags" | "slug" | "duration" | "image" | "user"
 >;
 
 export type PaginatedResponse<T> = {

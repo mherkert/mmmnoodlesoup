@@ -9,20 +9,17 @@ export const RecipePreview = ({
   recipe,
   ...props
 }: RecipePreviewProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const preparation: number = recipe.time.preparation || 0;
-  const waiting: number = recipe.time.waiting || 0;
-  const cooking: number = recipe.time.cooking || 0;
+  const preparation: number = recipe.duration.preparation || 0;
+  const waiting: number = recipe.duration.waiting || 0;
+  const cooking: number = recipe.duration.cooking || 0;
 
   return (
-    <Link to={`/recipes/${recipe.id}`}>
+    <Link to={`/recipes/${recipe.slug.current}`}>
       <Card {...props}>
         <Card.Image src={recipe.image.toString()} alt={recipe.title} />
-        <Card.Title>
-          {recipe.title}
-        </Card.Title>
+        <Card.Title>{recipe.title}</Card.Title>
         <Card.Description>{recipe.description}</Card.Description>
         <Card.Footer>
-          <span>{recipe.servingsCount} servings</span>
           <span>{preparation + waiting + cooking} min</span>
         </Card.Footer>
       </Card>

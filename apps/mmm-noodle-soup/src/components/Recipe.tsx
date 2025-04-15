@@ -11,9 +11,9 @@ export const Recipe = ({
   recipe,
   ...props
 }: RecipeProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const preparation: number = recipe.time.preparation || 0;
-  const waiting: number = recipe.time.waiting || 0;
-  const cooking: number = recipe.time.cooking || 0;
+  const preparation: number = recipe.duration.preparation || 0;
+  const waiting: number = recipe.duration.waiting || 0;
+  const cooking: number = recipe.duration.cooking || 0;
 
   return (
     <Card {...props}>

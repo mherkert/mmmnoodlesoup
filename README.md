@@ -1,24 +1,71 @@
-# Turborepo starter
+# 🥢 Mmm Noodle Soup
 
-This Turborepo starter is maintained by the Turborepo core team.
+Welcome to **Mmm Noodle Soup** — a cozy little corner of the internet where recipes come *first*, not after 14 paragraphs of childhood memories. This site is designed for people like me (hi 👋), who just want to cook, not scroll.
 
-## Using this example
+## Why this project?
 
-Run the following command:
+Over the years, I’ve collected recipes from everywhere — websites, books, scribbled notes from friends — and ended up with a chaotic mess that’s hard to navigate. Sometimes I can’t even find that *one perfect recipe* I made months ago, so I just give up and find a new one. Sound familiar?
 
-```sh
-npx create-turbo@latest
+So this is my attempt to fix that. Mmm Noodle Soup is my personal recipe box, rebuilt from the ground up with:
+
+- ✨ **Usability** on mobile as a top priority
+- ✨ **Minimal fluff** — the recipe content is the focus
+- ✨ **Easy search and fast access**
+- ✨ Eventually: a smooth way to add new recipes
+
+I’m also using this project to explore things I’ve been curious about: **static site generation**, **serverless architecture**, and **modern frontend tooling** (React, TypeScript, GraphQL, etc.).
+
+---
+
+# 🍳 Recipe Website Plan
+
+## Tech Stack
+
+- **Frontend:** Gatsby (React, TypeScript)
+- **Data Storage:** Sanity CMS (free tier)
+- **Serverless Functions:** Gatsby Functions (optional, for authenticated actions)
+- **Authentication:** External authentication service (e.g., Clerk / Auth0 / Firebase Auth — free tiers available)
+- **Search:** Local search using Fuse.js and prebuilt JSON index
+- **Hosting:** Gatsby Cloud, Netlify, or Vercel (free tier)
+
+---
+
+## Features
+
+- 📖 **Static generation** of all recipes at build time
+- 📝 **Authenticated users** can add new recipes via frontend
+- 🔄 **Rebuild trigger** via webhook after new content is added
+- 🔍 **Local fuzzy search** with autocompletion (Fuse.js)
+- 🔐 **Login system** to restrict recipe creation to logged-in users
+- ⚡ **Fast browsing** because everything is static
+
+---
+
+## 🛠 Architecture Overview
+
+```mermaid
+flowchart TD
+  A[User] -->|Accesses Site| B[Gatsby Static Site]
+  B -->|Fuzzy Search| B
+  A -->|Login/Sign Up| C[Auth Provider (Clerk/Auth0/Firebase)]
+  A -->|Submit Recipe| D[Gatsby Function (Serverless API)]
+  D -->|POST| E[Sanity CMS]
+  E -->|Content Updated| F[Webhook triggers new build]
+  F -->|Rebuilds| B
 ```
+
+# Project Setup
+
+This project's source code is managed in a monorepo powered by Turborepo.
 
 ## What's inside?
 
-This Turborepo includes the following packages/apps:
+This monorepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `mmm-noodle-soup`: the frontend of Mmm Noodle Soup
+- `studio-mmm-noodle-soup`: the schema types for Sanity CMS
 - `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
@@ -82,3 +129,23 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+
+
+# Common Commands
+
+## Deploy GraphQL API
+
+```sh
+sanity graphql deploy <dataset>
+```
+
+## Start Local Development Mode
+
+```sh
+npm run dev -w studio-mmm-noodle-soup
+```
+
+```sh
+npm run start -w mmm-noodle-soup
+```
+

@@ -28,7 +28,7 @@ const Title = ({ as, children }: React.PropsWithChildren<TitleProps>) => {
 };
 
 const Description = ({ children }: React.PropsWithChildren) => {
-  return <p className="ps-4 pe4">{children}</p>;
+  return <p className="ps-4 pe-4">{children}</p>;
 };
 
 const Image = ({ src, alt }: { src: string; alt: string }) => {
