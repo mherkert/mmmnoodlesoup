@@ -1,4 +1,4 @@
-import {defineField, defineType, validation} from 'sanity'
+import {defineField, defineType} from 'sanity'
 
 export const recipeType = defineType({
   name: 'recipe',
