@@ -9,7 +9,7 @@ export const Card = ({
   return (
     <article
       className={classNames(
-        "bg-secondary-light rounded-lg shadow-md overflow-hidden border border-primary/10 hover:shadow-lg transition-shadow",
+        "bg-secondary-light rounded-lg shadow-md overflow-hidden border border-primary/10 hover:shadow-lg transition-shadow pb-2",
         className
       )}
       {...props}
@@ -45,8 +45,16 @@ const Image = ({
   return children ? children : <img src={src} alt={alt} />;
 };
 
-const Footer = ({ children }: React.PropsWithChildren) => {
-  return <footer className="ps-4 pe-4">{children}</footer>;
+const Footer = ({
+  children,
+  className,
+  ...props
+}: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
+  return (
+    <footer className={classNames("ps-4 pe-4", className)} {...props}>
+      {children}
+    </footer>
+  );
 };
 
 const Content = ({ children }: React.PropsWithChildren) => {

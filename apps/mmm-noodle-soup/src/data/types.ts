@@ -29,6 +29,11 @@ export type Slug = {
   current: string;
 };
 
+export type Tag = {
+  id: string;
+  name: string;
+};
+
 export type Recipe = {
   id: string;
   title: string;
@@ -36,7 +41,7 @@ export type Recipe = {
   description: string;
   source: string | URL;
   image: any; // TODO: fix type
-  tags: string[];
+  tags: Tag[];
   servingsCount: number;
   duration: Duration;
   metadata: Metadata;
