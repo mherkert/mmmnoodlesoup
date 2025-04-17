@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+
 export const Card = ({
   children,
   className,
@@ -24,15 +25,24 @@ type TitleProps = {
 
 const Title = ({ as, children }: React.PropsWithChildren<TitleProps>) => {
   const As = as || "h1";
-  return <As className="ps-4 pe-4">{children}</As>;
+  return <As className="ps-4 pe-4 pt-2 pb-2">{children}</As>;
 };
+Title.displayName = "Card.Title";
 
 const Description = ({ children }: React.PropsWithChildren) => {
   return <p className="ps-4 pe-4">{children}</p>;
 };
 
-const Image = ({ src, alt }: { src: string; alt: string }) => {
-  return <img src={src} alt={alt} />;
+const Image = ({
+  src,
+  alt,
+  children,
+}: {
+  src?: string;
+  alt?: string;
+  children?: React.ReactNode;
+}) => {
+  return children ? children : <img src={src} alt={alt} />;
 };
 
 const Footer = ({ children }: React.PropsWithChildren) => {

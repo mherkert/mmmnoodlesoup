@@ -14,7 +14,7 @@ const RecipesPage = ({ data: { recipes } }: PageProps<DataProps>) => {
   return (
     <div className="flex gap-4">
       {recipes.nodes.map((recipe) => (
-        <RecipePreview className="w-96" key={recipe.id} recipe={recipe} />
+        <RecipePreview className="w-96 h-96" key={recipe.id} recipe={recipe} />
       ))}
     </div>
   );
@@ -37,7 +37,7 @@ export const query = graphql`
         }
         image {
           asset {
-            gatsbyImageData(layout: CONSTRAINED, width: 300)
+            gatsbyImageData(layout: CONSTRAINED, width: 384, height: 216)
           }
         }
         duration {
