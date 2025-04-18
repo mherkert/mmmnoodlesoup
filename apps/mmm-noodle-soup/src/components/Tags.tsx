@@ -12,9 +12,12 @@ export const Tags = ({ tags, max }: TagsProps) => {
   return (
     <div className="flex flex-wrap gap-1">
       {truncatedTags.map((tag) => (
-        <span className="text-xs border border-gray-300 rounded-md px-1 py-[2px]" key={tag.id}>
+        <span
+          className="text-xs border border-gray-300 rounded-md px-1 py-[2px] flex items-center"
+          key={tag.id}
+        >
           <FontAwesomeIcon className="pe-[2px] align-middle" icon={faTag} />
-          {tag.name}
+          <span>{tag.name}</span>
         </span>
       ))}
     </div>

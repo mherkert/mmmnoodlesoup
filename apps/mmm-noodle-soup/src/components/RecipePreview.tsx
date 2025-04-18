@@ -4,9 +4,9 @@ import { RecipeSummary } from "../data/types";
 import { Link } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { Tags } from "./Tags";
+import { Duration } from "./duration/Duration";
+
 export type RecipePreviewProps = {
   recipe: RecipeSummary;
   className?: string;
@@ -45,13 +45,8 @@ export const RecipePreview = ({
           </Card.Description>
         </div>
         <Card.Footer className="flex justify-between">
-          <span>
-            <FontAwesomeIcon className="pe-1" icon={faClock} />
-            {preparation + waiting + cooking} min
-          </span>
-          <span>
-            <Tags tags={recipe.tags} max={2} />
-          </span>
+          <Duration duration={recipe.duration} />
+          <Tags tags={recipe.tags} max={2} />
         </Card.Footer>
       </Card>
     </Link>
