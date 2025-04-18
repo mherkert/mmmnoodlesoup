@@ -27,8 +27,8 @@
     "gatsby-source-sanity": "^7.9.1",
     "install": "^0.13.0",
     "npm": "^11.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
@@ -40,5 +40,11 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "@fortawesome/react-fontawesome": {
+      "react": "18.3.1",
+      "react-dom": "18.3.1"
+    }
   }
 }
