@@ -1,11 +1,11 @@
 import React from "react";
-import { Card } from "./Card";
-import { RecipeSummary } from "../data/types";
+import { Card } from "../Card";
+import { RecipeSummary } from "../../data/types";
 import { Link } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import classNames from "classnames";
-import { Tags } from "./Tags";
-import { Duration } from "./duration/Duration";
+import { Tags } from "../tags/Tags";
+import { Duration } from "../duration/Duration";
 
 export type RecipePreviewProps = {
   recipe: RecipeSummary;

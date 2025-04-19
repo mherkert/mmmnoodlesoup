@@ -12,9 +12,9 @@ export const Duration = ({ duration }: DurationProps) => {
   const total = (preparation || 0) + (cooking || 0) + (waiting || 0);
 
   return (
-    <span className="flex items-center">
-      <FontAwesomeIcon className="pe-1" icon={faClock} />
-      <span>{total} min</span>
-    </span>
+    <div className="flex items-center">
+      <FontAwesomeIcon className="pe-1" icon={faClock} aria-hidden="true" />
+      <span aria-label={`Total time: ${total} minutes`}>{total} min</span>
+    </div>
   );
 };

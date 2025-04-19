@@ -1,6 +1,6 @@
 import React from "react";
-import { Card } from "./Card";
-import { Recipe as RecipeType } from "../data/types";
+import { Card } from "../Card";
+import { Recipe as RecipeType } from "../../data/types";
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 interface RecipeProps {

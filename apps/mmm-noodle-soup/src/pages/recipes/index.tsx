@@ -1,22 +1,21 @@
 import React from "react";
-import { RecipePreview } from "../../components/RecipePreview";
+import { RecipePreview } from "../../components/recipes/RecipePreview";
 import { graphql, PageProps } from "gatsby";
 import { RecipeSummary } from "../../data/types";
 
-
 type DataProps = {
   recipes: {
-    nodes: RecipeSummary[]
-  }
-}
+    nodes: RecipeSummary[];
+  };
+};
 
 const RecipesPage = ({ data: { recipes } }: PageProps<DataProps>) => {
   return (
-    <div className="flex gap-4">
+    <section className="flex flex-col md:flex-row md:flex-wrap gap-4">
       {recipes.nodes.map((recipe) => (
-        <RecipePreview className="w-96 h-96" key={recipe.id} recipe={recipe} />
+        <RecipePreview className="max-w-96 h-96" key={recipe.id} recipe={recipe} />
       ))}
-    </div>
+    </section>
   );
 };
 
@@ -33,6 +32,7 @@ export const query = graphql`
         title
         description
         tags {
+          id
           name
         }
         image {

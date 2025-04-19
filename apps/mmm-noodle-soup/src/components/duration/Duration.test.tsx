@@ -9,18 +9,21 @@ describe("Duration", () => {
     );
     expect(screen.getByTestId("font-awesome-icon")).toBeInTheDocument();
     expect(screen.getByText("30 min")).toBeInTheDocument();
+    expect(screen.getByLabelText("Total time: 30 minutes")).toBeInTheDocument();
   });
 
   it("duration renders correctly with empty duration", () => {
     render(<Duration duration={{}} />);
     expect(screen.getByTestId("font-awesome-icon")).toBeInTheDocument();
     expect(screen.getByText("0 min")).toBeInTheDocument();
+    expect(screen.getByLabelText("Total time: 0 minutes")).toBeInTheDocument();
   });
 
   it("duration renders correctly with no waiting time", () => {
     render(<Duration duration={{ preparation: 10, cooking: 10 }} />);
     expect(screen.getByTestId("font-awesome-icon")).toBeInTheDocument();
     expect(screen.getByText("20 min")).toBeInTheDocument();
+    expect(screen.getByLabelText("Total time: 20 minutes")).toBeInTheDocument();
   });
 
   it("duration renders correctly with no cooking time", () => {
@@ -33,5 +36,6 @@ describe("Duration", () => {
     render(<Duration duration={{ cooking: 10, waiting: 10 }} />);
     expect(screen.getByTestId("font-awesome-icon")).toBeInTheDocument();
     expect(screen.getByText("20 min")).toBeInTheDocument();
+    expect(screen.getByLabelText("Total time: 20 minutes")).toBeInTheDocument();
   });
 });

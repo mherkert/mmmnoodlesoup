@@ -1,5 +1,5 @@
 import React from "react";
-import { Recipe } from "../../components/Recipe";
+import { Recipe } from "../../components/recipes/Recipe";
 import { graphql, PageProps } from "gatsby";
 import { Recipe as RecipeType } from "../../data/types";
 
@@ -30,6 +30,7 @@ export const query = graphql`
       description
       source
       tags {
+        id
         name
       }
       image {
