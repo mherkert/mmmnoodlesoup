@@ -47,7 +47,9 @@ export const query = graphql`
       _createdAt
       _updatedAt
       user {
+        id
         name
+        email
       }
       groupedIngredients {
         title

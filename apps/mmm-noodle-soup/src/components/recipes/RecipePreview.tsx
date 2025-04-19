@@ -16,10 +16,6 @@ export const RecipePreview = ({
   className,
   ...props
 }: RecipePreviewProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const preparation: number = recipe.duration.preparation || 0;
-  const waiting: number = recipe.duration.waiting || 0;
-  const cooking: number = recipe.duration.cooking || 0;
-
   const imagePlaceholder = getImage(recipe.image.asset);
 
   const trimText = (text: string, maxLength: number) => {
@@ -28,7 +24,11 @@ export const RecipePreview = ({
   };
 
   return (
-    <Link to={`/recipes/${recipe.slug.current}`}>
+    <Link
+      to={`/recipes/${recipe.slug.current}`}
+      className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
+      aria-labelledby={`recipe-title-${recipe.id}`}
+    >
       <Card
         className={classNames("flex flex-col justify-between", className)}
         {...props}
@@ -36,10 +36,12 @@ export const RecipePreview = ({
         <div>
           <Card.Image>
             {imagePlaceholder && (
-              <GatsbyImage image={imagePlaceholder} alt={recipe.title} />
+              <GatsbyImage image={imagePlaceholder} alt="" aria-hidden="true" />
             )}
           </Card.Image>
-          <Card.Title>{recipe.title}</Card.Title>
+          <Card.Title id={`recipe-title-${recipe.id}`}>
+            {recipe.title}
+          </Card.Title>
           <Card.Description>
             {trimText(recipe.description, 100)}
           </Card.Description>

@@ -13,7 +13,11 @@ const RecipesPage = ({ data: { recipes } }: PageProps<DataProps>) => {
   return (
     <section className="flex flex-col md:flex-row md:flex-wrap gap-4">
       {recipes.nodes.map((recipe) => (
-        <RecipePreview className="max-w-96 h-96" key={recipe.id} recipe={recipe} />
+        <RecipePreview
+          className="max-w-96 h-96"
+          key={recipe.id}
+          recipe={recipe}
+        />
       ))}
     </section>
   );
@@ -46,7 +50,9 @@ export const query = graphql`
           waiting
         }
         user {
+          id
           name
+          email
         }
       }
     }

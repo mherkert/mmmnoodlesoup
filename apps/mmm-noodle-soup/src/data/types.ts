@@ -34,6 +34,12 @@ export type Tag = {
   name: string;
 };
 
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+
 export type Recipe = {
   id: string;
   title: string;
@@ -49,7 +55,7 @@ export type Recipe = {
   groupedInstructions: GroupedInstructions[];
   createdAt: Date;
   updatedAt: Date;
-  user: string;
+  user: User;
 };
 
 export type RecipeSummary = Pick<

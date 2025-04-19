@@ -1,6 +1,8 @@
 import React from "react";
 import Logo from "./Logo";
 import { Link } from "gatsby";
+import Search from "./search/Search";
+import { Button } from '@headlessui/react'
 
 const Header = () => {
   const isLoggedIn = false;
@@ -8,37 +10,36 @@ const Header = () => {
   const openLoginModal = () => {};
   return (
     <header className="sticky top-0 bg-primary shadow-sm z-10">
-      <nav className="container mx-auto px-4 py-4 flex-col md:flex-row flex items-center justify-between ">
-        {/* <h1 className="font-brand text-4xl font-semibold text-primary">
-          Mmm Noodle Soup
-        </h1> */}
+      <nav className="container mx-auto px-4 py-4 flex-col md:flex-row flex items-center justify-between gap-4">
         {/* Logo - left side */}
-        <Link to="/recipes" className="flex items-center">
+        <Link
+          to="/recipes"
+          className="flex items-center outline-none focus:outline-2 focus:outline-offset-2 focus:outline-white focus:rounded-md"
+        >
           <Logo />
         </Link>
 
         {/* Search - center */}
-        <div className="flex-1 max-w-xl mx-4">
-          {/* <SearchAutocomplete /> */}
-          <input type="text" placeholder="Search" />
+        <div className="flex-1 max-w-xl mx-4 w-[80%]">
+          <Search />
         </div>
 
         {/* Actions - right side */}
         <div className="flex items-center gap-4">
           {isLoggedIn ? (
-            <button
+            <Button
               onClick={openAddRecipeModal}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark"
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark outline-none focus:outline-2 focus:outline-offset-2 focus:outline-white"
             >
               Add Recipe
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               onClick={openLoginModal}
-              className="px-4 py-2 border border-secondary-light text-secondary-light rounded-md hover:bg-primary/10"
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark outline-none focus:outline-2 focus:outline-offset-2 focus:outline-white border border-solid border-white"
             >
               Sign In
-            </button>
+            </Button>
           )}
         </div>
       </nav>

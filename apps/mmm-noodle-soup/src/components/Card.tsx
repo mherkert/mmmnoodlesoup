@@ -21,11 +21,16 @@ export const Card = ({
 
 type TitleProps = {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  id?: string;
 };
 
-const Title = ({ as, children }: React.PropsWithChildren<TitleProps>) => {
+const Title = ({ as, id, children }: React.PropsWithChildren<TitleProps>) => {
   const As = as || "h1";
-  return <As className="ps-4 pe-4 pt-2 pb-2">{children}</As>;
+  return (
+    <As id={id} className="ps-4 pe-4 pt-2 pb-2">
+      {children}
+    </As>
+  );
 };
 Title.displayName = "Card.Title";
 
