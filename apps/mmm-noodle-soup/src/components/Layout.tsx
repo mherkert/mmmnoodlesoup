@@ -6,17 +6,17 @@ const Layout = ({
   children,
   ...props
 }: { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => {
-  const Content = ({ children }: { children: React.ReactNode }) => {
-    return <div className="p-8">{children}</div>;
-  };
-
   return (
-    <div {...props}>
+    <div className="h-full flex flex-col" {...props}>
       <Header />
       <Content>{children}</Content>
       <Footer />
     </div>
   );
+};
+
+const Content = ({ children }: { children: React.ReactNode }) => {
+  return <div className="p-8 flex-1">{children}</div>;
 };
 
 export default Layout;

@@ -5,6 +5,17 @@
 @tailwind utilities;
 
 @layer base {
+  html,
+  body,
+  #___gatsby,
+  #gatsby-focus-wrapper {
+    @apply h-full;
+  }
+
+  /* html, body, #___gatsby {
+    height: 100%;
+} */
+
   body {
     @apply font-body;
     @apply text-primary;
