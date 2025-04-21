@@ -46,7 +46,7 @@ export type Recipe = {
   slug: Slug;
   description: string;
   source: string | URL;
-  image: any; // TODO: fix type
+  image?: any; // TODO: fix type
   tags: Tag[];
   servingsCount: number;
   duration: Duration;

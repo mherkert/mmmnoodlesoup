@@ -16,7 +16,7 @@ export const RecipePreview = ({
   className,
   ...props
 }: RecipePreviewProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const imagePlaceholder = getImage(recipe.image.asset);
+  const gatsbyImage = getImage(recipe.image?.asset);
 
   const trimText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
@@ -35,16 +35,18 @@ export const RecipePreview = ({
       >
         <div>
           <Card.Image>
-            {imagePlaceholder && (
-              <GatsbyImage image={imagePlaceholder} alt="" aria-hidden="true" />
+            {gatsbyImage && (
+              <GatsbyImage image={gatsbyImage} alt="" aria-hidden="true" />
             )}
           </Card.Image>
           <Card.Title id={`recipe-title-${recipe.id}`}>
             {recipe.title}
           </Card.Title>
-          <Card.Description>
-            {trimText(recipe.description, 100)}
-          </Card.Description>
+          {recipe.description && (
+            <Card.Description>
+              {trimText(recipe.description, 100)}
+            </Card.Description>
+          )}
         </div>
         <Card.Footer className="flex justify-between">
           <Duration duration={recipe.duration} />

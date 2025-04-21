@@ -43,15 +43,7 @@ export const recipeType = defineType({
       type: 'image',
       options: {
         hotspot: true,
-      },
-      fields: [
-        defineField({
-          name: 'alt',
-          type: 'string',
-          validation: (rule) => rule.required().max(96),
-          description: 'The alt text for the image',
-        }),
-      ],
+      }
     }),
     defineField({
       name: 'imageCredit',
@@ -79,22 +71,6 @@ export const recipeType = defineType({
       title: 'Duration',
       type: 'recipeDuration',
       description: 'The duration of the recipe',
-    }),
-    defineField({
-      name: 'publishedAt',
-      title: 'Published At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
-      validation: (rule) => rule.required(),
-      description: 'The date and time the recipe was published',
-    }),
-    defineField({
-      name: 'updatedAt',
-      title: 'Updated At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
-      validation: (rule) => rule.required(),
-      description: 'The date and time the recipe was last updated',
     }),
     defineField({
       name: 'user',

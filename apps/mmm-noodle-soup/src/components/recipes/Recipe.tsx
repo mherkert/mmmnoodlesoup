@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "../Card";
 import { Recipe as RecipeType } from "../../data/types";
-import { GatsbyImage, getImage } from "gatsby-plugin-image"
+import { GatsbyImage, getImage } from "gatsby-plugin-image";
 
 interface RecipeProps {
   recipe: RecipeType;
@@ -15,12 +15,14 @@ export const Recipe = ({
   const waiting: number = recipe.duration.waiting || 0;
   const cooking: number = recipe.duration.cooking || 0;
 
-  const imagePlaceholder = getImage(recipe.image.asset)
+  const imagePlaceholder = getImage(recipe.image.asset);
 
   return (
     <Card {...props}>
       <Card.Image>
-        {imagePlaceholder && <GatsbyImage image={imagePlaceholder} alt={recipe.title} />}
+        {imagePlaceholder && (
+          <GatsbyImage image={imagePlaceholder} alt={recipe.title} />
+        )}
       </Card.Image>
       <Card.Title>{recipe.title}</Card.Title>
       <Card.Description>{recipe.description}</Card.Description>
@@ -45,9 +47,9 @@ export const Recipe = ({
           {recipe.groupedInstructions.map((instruction) => (
             <li key={instruction.title}>
               <h3>{instruction.title}</h3>
-              <ol>
-                {instruction.instructions.map((instruction) => (
-                  <li key={instruction}>{instruction}</li>
+              <ol className="counter-reset">
+                {instruction.instructions.map((instruction, index) => (
+                  <Instruction key={index} instruction={instruction} />
                 ))}
               </ol>
             </li>
@@ -59,5 +61,13 @@ export const Recipe = ({
         <span>{preparation + waiting + cooking} min</span>
       </Card.Footer>
     </Card>
+  );
+};
+
+const Instruction = ({ instruction }: { instruction: string }) => {
+  return (
+    <li>
+      <span>{instruction}</span>
+    </li>
   );
 };
