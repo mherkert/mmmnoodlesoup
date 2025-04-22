@@ -139,11 +139,18 @@ Learn more about the power of Turborepo:
 sanity graphql deploy <dataset>
 ```
 
+## Load Datasets into Sanity
+
+```sh
+sanity dataset import <some_data.ndjson> production [--replace]
+```
+
 ## Start Local Development Mode
 
 ```sh
 npm run dev -w studio-mmm-noodle-soup
 ```
+or 
 
 ```sh
 npm run start -w mmm-noodle-soup

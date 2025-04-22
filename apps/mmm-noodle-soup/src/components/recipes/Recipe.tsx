@@ -15,19 +15,19 @@ export const Recipe = ({
   const waiting: number = recipe.duration.waiting || 0;
   const cooking: number = recipe.duration.cooking || 0;
 
-  const imagePlaceholder = getImage(recipe.image.asset);
+  const gatsbyImage = getImage(recipe.image?.asset);
 
   return (
     <Card {...props}>
       <Card.Image>
-        {imagePlaceholder && (
-          <GatsbyImage image={imagePlaceholder} alt={recipe.title} />
+        {gatsbyImage && (
+          <GatsbyImage image={gatsbyImage} alt={recipe.title} />
         )}
       </Card.Image>
       <Card.Title>{recipe.title}</Card.Title>
       <Card.Description>{recipe.description}</Card.Description>
       <Card.Content>
-        <h2>Ingredients</h2>
+        <Heading>Ingredients</Heading>
         <ul>
           {recipe.groupedIngredients.map((ingredient) => (
             <li key={ingredient.title}>
@@ -42,16 +42,17 @@ export const Recipe = ({
             </li>
           ))}
         </ul>
-        <h2>Instructions</h2>
+        <Heading>Instructions</Heading>
         <ol>
           {recipe.groupedInstructions.map((instruction) => (
             <li key={instruction.title}>
               <h3>{instruction.title}</h3>
-              <ol className="counter-reset">
+              {/* <ol className="counter-reset">
                 {instruction.instructions.map((instruction, index) => (
-                  <Instruction key={index} instruction={instruction} />
+                  <InstructionListItem key={index} instruction={instruction} index={index} />
                 ))}
-              </ol>
+              </ol> */}
+              <InstructionsList instructions={instruction.instructions} />
             </li>
           ))}
         </ol>
@@ -64,10 +65,29 @@ export const Recipe = ({
   );
 };
 
-const Instruction = ({ instruction }: { instruction: string }) => {
+const Heading = ({ children }: { children: React.ReactNode }) => {
+  return <h2 className="pt-4 pb-2" >{children}</h2>;
+};
+
+interface InstructionsListProps {
+  instructions: string[];
+  className?: string;
+}
+
+export const InstructionsList: React.FC<InstructionsListProps> = ({
+  instructions,
+  className = "",
+}) => {
   return (
-    <li>
-      <span>{instruction}</span>
-    </li>
+    <ol className={`instructions-list ${className}`}>
+      {instructions.map((instruction, index) => (
+        <li key={index} className="relative pl-12 mb-4 ">
+          <span className="absolute left-0 top-[-6px] w-8 h-8 flex items-center justify-center text-2xl font-heading text-primary">
+            {index + 1}
+          </span>
+          <span className="block">{instruction}</span>
+        </li>
+      ))}
+    </ol>
   );
 };
