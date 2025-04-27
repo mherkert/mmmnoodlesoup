@@ -32,6 +32,7 @@ export type Slug = {
 export type Tag = {
   id: string;
   name: string;
+  slug: Slug;
 };
 
 export type User = {
@@ -47,6 +48,7 @@ export type Recipe = {
   description: string;
   source: string | URL;
   image?: any; // TODO: fix type
+  imageCredit?: string;
   tags: Tag[];
   servingsCount: number;
   duration: Duration;

@@ -5,9 +5,10 @@ import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 type DurationProps = {
   duration: DurationType;
+  showDetails?: boolean;
 };
 
-export const Duration = ({ duration }: DurationProps) => {
+export const Duration = ({ duration, showDetails = false }: DurationProps) => {
   const { preparation, cooking, waiting } = duration;
   const total = (preparation || 0) + (cooking || 0) + (waiting || 0);
 

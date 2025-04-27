@@ -9,8 +9,8 @@ describe("RecipePreview", () => {
     title: "Recipe 1",
     description: "Description 1",
     tags: [
-      { id: "1", name: "tag1" },
-      { id: "2", name: "tag2" },
+      { id: "1", name: "tag1", slug: { current: "tag1" } },
+      { id: "2", name: "tag2", slug: { current: "tag2" } },
     ],
     duration: {
       preparation: 10,

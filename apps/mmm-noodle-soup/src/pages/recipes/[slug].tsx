@@ -32,12 +32,16 @@ export const query = graphql`
       tags {
         id
         name
+        slug {
+          current
+        }
       }
       image {
         asset {
-          gatsbyImageData(layout: CONSTRAINED, width: 300)
+          gatsbyImageData(layout: CONSTRAINED, width: 600, height: 400)
         }
       }
+      imageCredit
       servingsCount
       duration {
         preparation

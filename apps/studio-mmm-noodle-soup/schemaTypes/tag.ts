@@ -1,4 +1,4 @@
-import {defineField, defineType, validation} from 'sanity'
+import {defineField, defineType} from 'sanity'
 
 export const tagType = defineType({
     name: 'tag',
@@ -10,5 +10,16 @@ export const tagType = defineType({
             type: 'string',
             validation: (rule) => rule.required().max(55),
         }),
+        defineField({
+            name: 'slug',
+            title: 'Slug',
+            type: 'slug',
+            validation: (rule) => rule.required(),
+            description: 'The slug of the recipe',
+            options: {
+              source: 'title',
+              maxLength: 100,
+            },
+          }),      
     ],
 })

@@ -2,6 +2,8 @@ import React from "react";
 import { Card } from "../Card";
 import { Recipe as RecipeType } from "../../data/types";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import { Tags } from "../tags/Tags";
+import { Duration } from "../duration/Duration";
 
 interface RecipeProps {
   recipe: RecipeType;
@@ -11,62 +13,131 @@ export const Recipe = ({
   recipe,
   ...props
 }: RecipeProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const preparation: number = recipe.duration.preparation || 0;
-  const waiting: number = recipe.duration.waiting || 0;
-  const cooking: number = recipe.duration.cooking || 0;
-
   const gatsbyImage = getImage(recipe.image?.asset);
 
   return (
     <Card {...props}>
-      <Card.Image>
-        {gatsbyImage && (
-          <GatsbyImage image={gatsbyImage} alt={recipe.title} />
-        )}
-      </Card.Image>
-      <Card.Title>{recipe.title}</Card.Title>
-      <Card.Description>{recipe.description}</Card.Description>
+      <Card.Header className="flex flex-col md:flex-row gap-4">
+        <Card.Image className="flex flex-col">
+          {gatsbyImage && (
+            <GatsbyImage image={gatsbyImage} alt="" aria-hidden="true" />
+          )}
+          {recipe.imageCredit && (
+            <div className="text-sm text-gray-500 text-end">
+              Photo: {recipe.imageCredit}
+            </div>
+          )}
+        </Card.Image>
+        <div>
+          <Card.Title>{recipe.title}</Card.Title>
+          <Card.Description>{recipe.description}</Card.Description>
+          <Card.Separator/>
+          <RecipeInformation className="ps-4 pe-4 ">
+            {/* TODO servings */}
+            <Tags tags={recipe.tags} link={true} />
+            <Duration duration={recipe.duration} showDetails={true} />
+          </RecipeInformation>
+        </div>
+      </Card.Header>
+      <Card.Separator/>
       <Card.Content>
-        <Heading>Ingredients</Heading>
-        <ul>
-          {recipe.groupedIngredients.map((ingredient) => (
-            <li key={ingredient.title}>
-              <h3>{ingredient.title}</h3>
-              <ul>
-                {ingredient.ingredients.map((ingredient) => (
-                  <li key={ingredient.name}>
-                    {ingredient.amount} {ingredient.unit} {ingredient.name}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-        <Heading>Instructions</Heading>
-        <ol>
-          {recipe.groupedInstructions.map((instruction) => (
-            <li key={instruction.title}>
-              <h3>{instruction.title}</h3>
-              {/* <ol className="counter-reset">
-                {instruction.instructions.map((instruction, index) => (
-                  <InstructionListItem key={index} instruction={instruction} index={index} />
-                ))}
-              </ol> */}
-              <InstructionsList instructions={instruction.instructions} />
-            </li>
-          ))}
-        </ol>
+        <div className="flex flex-col md:flex-row gap-4">
+          <Ingredients className="md:w-1/3" recipe={recipe} />
+          <Instructions className="md:w-2/3" recipe={recipe} />
+        </div>
       </Card.Content>
-      <Card.Footer>
-        <span>{recipe.servingsCount} servings</span>
-        <span>{preparation + waiting + cooking} min</span>
-      </Card.Footer>
+      <Card.Footer>{/* TODO: author and source */}</Card.Footer>
     </Card>
   );
 };
 
-const Heading = ({ children }: { children: React.ReactNode }) => {
-  return <h2 className="pt-4 pb-2" >{children}</h2>;
+const RecipeInformation = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return <div className={className}>{children}</div>;
+};
+
+const Heading = ({
+  children,
+  level = 1,
+}: {
+  children: React.ReactNode;
+  level?: number;
+}) => {
+  switch (level) {
+    case 1:
+      return <h1 className="pt-8 pb-6">{children}</h1>;
+    case 2:
+      return <h2 className="pt-6 pb-4">{children}</h2>;
+    case 3:
+      return <h3 className="pt-4 pb-2">{children}</h3>;
+    default:
+      return <h1 className="pt-8 pb-6">{children}</h1>;
+  }
+};
+
+const Ingredients = ({
+  recipe,
+  className,
+}: {
+  recipe: RecipeType;
+  className?: string;
+}) => {
+  return (
+    <div className={className}>
+      <Heading level={2}>Ingredients</Heading>
+      <ul>
+        {recipe.groupedIngredients.map((ingredient) => (
+          <li key={ingredient.title}>
+            {ingredient.title && (
+              <Heading level={3}>{ingredient.title}</Heading>
+            )}
+            <ul className="flex flex-col gap-1.5">
+              {ingredient.ingredients.map((ingredient) => (
+                <li key={ingredient.name} className="flex gap-2">
+                  <span className="font-bold min-w-24 inline-block">
+                    {ingredient.amount} {ingredient.unit}
+                  </span>{" "}
+                  <span>
+                    {ingredient.name}
+                    {ingredient.comment && `, ${ingredient.comment}`}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const Instructions = ({
+  recipe,
+  className,
+}: {
+  recipe: RecipeType;
+  className?: string;
+}) => {
+  return (
+    <div className={className}>
+      <Heading level={2}>Instructions</Heading>
+      <ol>
+        {recipe.groupedInstructions.map((instruction) => (
+          <li key={instruction.title}>
+            {instruction.title && (
+              <Heading level={3}>{instruction.title}</Heading>
+            )}
+            <InstructionsList instructions={instruction.instructions} />
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
 };
 
 interface InstructionsListProps {
@@ -74,7 +145,7 @@ interface InstructionsListProps {
   className?: string;
 }
 
-export const InstructionsList: React.FC<InstructionsListProps> = ({
+const InstructionsList: React.FC<InstructionsListProps> = ({
   instructions,
   className = "",
 }) => {
