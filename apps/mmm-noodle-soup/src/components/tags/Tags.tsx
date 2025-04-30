@@ -8,9 +8,10 @@ type TagsProps = {
   tags: Tag[];
   link?: boolean;
   max?: number;
+  className?: string;
 };
 
-export const Tags = ({ tags, link = false, max }: TagsProps) => {
+export const Tags = ({ tags, link = false, max, className }: TagsProps) => {
   if (tags.length === 0) {
     return null;
   }
@@ -18,7 +19,10 @@ export const Tags = ({ tags, link = false, max }: TagsProps) => {
   const truncatedTags = max ? tags.slice(0, max) : tags;
   return (
     <ul
-      className="flex flex-wrap gap-1 list-none p-0 m-0"
+      className={classNames(
+        "flex flex-wrap gap-1 list-none p-0 m-0",
+        className
+      )}
       aria-label="Recipe tags"
     >
       {truncatedTags.map((tag) => {

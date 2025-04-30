@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "../Card";
 import { Recipe as RecipeType } from "../../data/types";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import { Tags } from "../tags/Tags";
 import { Duration } from "../duration/Duration";
+import { formatDate } from "../../utils/date";
+import { ExternalLink } from "../links/ExternalLink";
+import { Button } from "../buttons/Button";
 
 interface RecipeProps {
   recipe: RecipeType;
@@ -13,6 +16,9 @@ export const Recipe = ({
   recipe,
   ...props
 }: RecipeProps & React.HTMLAttributes<HTMLDivElement>) => {
+  const [fullscreen, setFullscreen] = useState(false);
+  const [ingredientsMultiplier, setIngredientsMultiplier] = useState(1);
+
   const gatsbyImage = getImage(recipe.image?.asset);
 
   return (
@@ -28,27 +34,52 @@ export const Recipe = ({
             </div>
           )}
         </Card.Image>
-        <div>
+        <div className="flex-grow">
           <Card.Title>{recipe.title}</Card.Title>
           <Card.Description>{recipe.description}</Card.Description>
-          <Card.Separator/>
-          <RecipeInformation className="ps-4 pe-4 ">
-            {/* TODO servings */}
-            <Tags tags={recipe.tags} link={true} />
+          <Card.Separator />
+          <RecipeInformation className="ps-4 pe-4">
+            <Tags className="mb-4" tags={recipe.tags} link={true} />
             <Duration duration={recipe.duration} showDetails={true} />
           </RecipeInformation>
         </div>
       </Card.Header>
-      <Card.Separator/>
-      <Card.Content>
-        <div className="flex flex-col md:flex-row gap-4">
-          <Ingredients className="md:w-1/3" recipe={recipe} />
-          <Instructions className="md:w-2/3" recipe={recipe} />
-        </div>
+      <Card.Separator />
+      <Card.Content className="flex flex-col md:flex-row gap-4">
+        <Ingredients
+          className="md:w-1/3"
+          recipe={recipe}
+          ingredientsMultiplier={ingredientsMultiplier}
+          setIngredientsMultiplier={setIngredientsMultiplier}
+        />
+        <Instructions className="md:w-2/3" recipe={recipe} />
       </Card.Content>
-      <Card.Footer>{/* TODO: author and source */}</Card.Footer>
+      <Card.Separator />
+      <Card.Footer>
+        <div className="text-sm text-gray-500 text-end">
+          <span>
+            Added by {recipe.user.name}{" "}
+            <span className="hidden md:inline whitespace-nowrap">
+              on {formatDate(recipe._createdAt)}
+            </span>
+          </span>{" "}
+          | <Source source={recipe.source} />
+        </div>
+      </Card.Footer>
     </Card>
   );
+};
+
+const Source = ({ source }: { source: string }) => {
+  try {
+    return (
+      <ExternalLink href={new URL(source).toString()}>
+        Recipe Source
+      </ExternalLink>
+    );
+  } catch (error) {
+    return <span>Recipe source: {source}</span>;
+  }
 };
 
 const RecipeInformation = ({
@@ -80,16 +111,55 @@ const Heading = ({
   }
 };
 
+const QUANTITY_OPTIONS = [
+  { label: "½ x", value: 0.5 },
+  { label: "1 x", value: 1 },
+  { label: "1½ x", value: 1.5 },
+  { label: "2 x", value: 2 },
+];
+
 const Ingredients = ({
   recipe,
   className,
+  ingredientsMultiplier,
+  setIngredientsMultiplier,
 }: {
   recipe: RecipeType;
   className?: string;
+  ingredientsMultiplier: number;
+  setIngredientsMultiplier: (ingredientsMultiplier: number) => void;
 }) => {
   return (
     <div className={className}>
-      <Heading level={2}>Ingredients</Heading>
+      <Heading level={2}>
+        Ingredients{" "}
+        <span className="text-sm">
+          (Serves {recipe.servingsCount * ingredientsMultiplier})
+        </span>
+      </Heading>
+      {recipe.servingsCount && (
+        <div className="flex gap-2 mb-4 flex-col lg:flex-row">
+          <div className="flex gap-2">
+            {QUANTITY_OPTIONS.map(({ value, label }) => {
+              return (
+                <Button
+                  key={value}
+                  variant="outline"
+                  size="sm"
+                  className="w-13 whitespace-nowrap"
+                  active={ingredientsMultiplier === value}
+                  onClick={() => setIngredientsMultiplier(value)}
+                >
+                  {label}
+                </Button>
+              );
+            })}
+          </div>
+          {/* <div className="content-center border-2 text-primary rounded-3xl border-primary text-5xl w-11 h-11">
+            {recipe.servingsCount * ingredientsMultiplier}
+          </div> */}
+        </div>
+      )}
       <ul>
         {recipe.groupedIngredients.map((ingredient) => (
           <li key={ingredient.title}>
@@ -100,8 +170,10 @@ const Ingredients = ({
               {ingredient.ingredients.map((ingredient) => (
                 <li key={ingredient.name} className="flex gap-2">
                   <span className="font-bold min-w-24 inline-block">
-                    {ingredient.amount} {ingredient.unit}
-                  </span>{" "}
+                    {ingredient.amount &&
+                      ingredient.amount * ingredientsMultiplier}{" "}
+                    {ingredient.unit}
+                  </span>
                   <span>
                     {ingredient.name}
                     {ingredient.comment && `, ${ingredient.comment}`}

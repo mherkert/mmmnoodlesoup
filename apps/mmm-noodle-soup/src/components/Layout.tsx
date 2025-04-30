@@ -16,7 +16,7 @@ const Layout = ({
 };
 
 const Content = ({ children }: { children: React.ReactNode }) => {
-  return <div className="p-8 flex-1">{children}</div>;
+  return <div className="p-4 md:p-8 flex-1">{children}</div>;
 };
 
 export default Layout;

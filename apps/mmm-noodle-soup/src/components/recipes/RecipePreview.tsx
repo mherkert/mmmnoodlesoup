@@ -39,7 +39,7 @@ export const RecipePreview = ({
               <GatsbyImage image={gatsbyImage} alt="" aria-hidden="true" />
             )}
           </Card.Image>
-          <Card.Title id={`recipe-title-${recipe.id}`}>
+          <Card.Title className="underline" id={`recipe-title-${recipe.id}`}>
             {recipe.title}
           </Card.Title>
           {recipe.description && (

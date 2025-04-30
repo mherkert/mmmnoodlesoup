@@ -46,7 +46,7 @@ export type Recipe = {
   title: string;
   slug: Slug;
   description: string;
-  source: string | URL;
+  source: string;
   image?: any; // TODO: fix type
   imageCredit?: string;
   tags: Tag[];
@@ -55,14 +55,21 @@ export type Recipe = {
   metadata: Metadata;
   groupedIngredients: GroupedIngredients[];
   groupedInstructions: GroupedInstructions[];
-  createdAt: Date;
-  updatedAt: Date;
+  _createdAt: string;
+  _updatedAt: string;
   user: User;
 };
 
 export type RecipeSummary = Pick<
   Recipe,
-  "id" | "title" | "description" | "tags" | "slug" | "duration" | "image" | "user"
+  | "id"
+  | "title"
+  | "description"
+  | "tags"
+  | "slug"
+  | "duration"
+  | "image"
+  | "user"
 >;
 
 export type PaginatedResponse<T> = {
