@@ -17,8 +17,8 @@ const Search = () => {
           //   displayValue={(person) => person?.name}
           //   onChange={(event) => setQuery(event.target.value)}
         />
-        <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
-          <FontAwesomeIcon icon={faSearch} />
+        <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5" aria-label="Search">
+          <FontAwesomeIcon aria-hidden icon={faSearch} />
         </ComboboxButton>
       </div>
       {/* <ComboboxInput

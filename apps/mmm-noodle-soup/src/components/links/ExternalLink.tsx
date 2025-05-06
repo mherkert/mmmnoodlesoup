@@ -15,7 +15,6 @@ export const ExternalLink: React.FC<ExternalLinkProps> = ({
   className = "",
   showIcon = true,
 }) => {
-
   return (
     <a
       target="_blank"
@@ -26,7 +25,11 @@ export const ExternalLink: React.FC<ExternalLinkProps> = ({
     >
       {children}
       {showIcon && (
-        <FontAwesomeIcon icon={faUpRightFromSquare} className="text-xs" />
+        <FontAwesomeIcon
+          icon={faUpRightFromSquare}
+          aria-hidden
+          className="text-xs"
+        />
       )}
     </a>
   );

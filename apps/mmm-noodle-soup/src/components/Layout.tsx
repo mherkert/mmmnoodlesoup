@@ -1,22 +1,43 @@
 import React from "react";
 import Footer from "./Footer";
 import Header from "./Header";
+import {
+  FullscreenProvider,
+  useFullscreenContext,
+} from "../contexts/FullscreenContext";
 
+const FullscreenAware = ({
+  children,
+  hideInFullscreen = true,
+}: {
+  children: React.ReactNode;
+  hideInFullscreen?: boolean;
+}) => {
+  const { isFullscreen } = useFullscreenContext();
+
+  return isFullscreen && hideInFullscreen ? null : <>{children}</>;
+};
 const Layout = ({
   children,
   ...props
 }: { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className="h-full flex flex-col" {...props}>
-      <Header />
-      <Content>{children}</Content>
-      <Footer />
+      <FullscreenProvider>
+        <FullscreenAware>
+          <Header />
+        </FullscreenAware>
+        <Content>{children}</Content>
+        <FullscreenAware>
+          <Footer />
+        </FullscreenAware>
+      </FullscreenProvider>
     </div>
   );
 };
 
 const Content = ({ children }: { children: React.ReactNode }) => {
-  return <div className="p-4 md:p-8 flex-1">{children}</div>;
+  return <section className="ps-4 pe-4 md:p-8 flex-1">{children}</section>;
 };
 
 export default Layout;

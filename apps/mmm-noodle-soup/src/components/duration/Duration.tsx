@@ -30,19 +30,19 @@ export const Duration = ({ duration, showDetails = false }: DurationProps) => {
             <th className="text-right">{total} min</th>
           </tr>
 
-          {preparation && (
+          {preparation !== 0 && (
             <tr className="text-primary-light/90 text-sm">
               <th className="text-left pe-4">Preparation</th>
               <td className="text-right">{preparation} min</td>
             </tr>
           )}
-          {waiting && (
+          {waiting !== 0 && (
             <tr className="text-primary-light/90 text-sm">
               <th className="text-left pe-4">Waiting</th>
               <td className="text-right">{waiting} min</td>
-            </tr>
+            </tr> 
           )}
-          {cooking && (
+          {cooking !== 0 && (
             <tr className="text-primary-light/90 text-sm">
               <th className="text-left pe-4">Cooking</th>
               <td className="text-right">{cooking} min</td>

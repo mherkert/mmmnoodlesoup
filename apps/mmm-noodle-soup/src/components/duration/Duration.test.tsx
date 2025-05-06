@@ -14,9 +14,8 @@ describe("Duration", () => {
 
   it("duration renders correctly with empty duration", () => {
     render(<Duration duration={{}} />);
-    expect(screen.getByTestId("font-awesome-icon")).toBeInTheDocument();
-    expect(screen.getByText("0 min")).toBeInTheDocument();
-    expect(screen.getByLabelText("Total time: 0 minutes")).toBeInTheDocument();
+    expect(screen.queryByTestId("font-awesome-icon")).not.toBeInTheDocument();
+    expect(screen.queryByText("Total time")).not.toBeInTheDocument();
   });
 
   it("duration renders correctly with no waiting time", () => {
