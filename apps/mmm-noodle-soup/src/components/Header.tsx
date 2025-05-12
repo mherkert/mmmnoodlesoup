@@ -2,7 +2,7 @@ import React from "react";
 import Logo from "./Logo";
 import { Link } from "gatsby";
 import Search from "./search/Search";
-import { Button } from '@headlessui/react'
+import { Button } from "@headlessui/react";
 
 const Header = () => {
   const isLoggedIn = false;
@@ -20,9 +20,7 @@ const Header = () => {
         </Link>
 
         {/* Search - center */}
-        <div className="flex-1 max-w-xl mx-4 w-[80%]">
-          <Search />
-        </div>
+        <Search />
 
         {/* Actions - right side */}
         <div className="flex items-center gap-4">

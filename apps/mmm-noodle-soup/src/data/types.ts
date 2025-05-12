@@ -60,6 +60,13 @@ export type Recipe = {
   user: User;
 };
 
+export type RecipeSearchResult = Pick<
+  Recipe,
+  | "id"
+  | "title"
+  | "slug"
+>;
+
 export type RecipeSummary = Pick<
   Recipe,
   | "id"

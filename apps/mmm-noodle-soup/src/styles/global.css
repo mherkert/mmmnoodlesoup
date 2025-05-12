@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --search-input-width-lg: 500px;
+  --search-input-width-md: 300px;
+  --search-input-width-sm: 250px;
+}
+
 @layer base {
   html,
   body,

@@ -3,6 +3,7 @@ import { useFullscreen } from "../hooks/useFullscreen";
 import { Button } from "./buttons/Button";
 import { faCompress, faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 interface FullscreenViewProps {
   fullscreenContent: React.ReactNode;
@@ -21,9 +22,11 @@ export const FullscreenView: React.FC<FullscreenViewProps> = ({
 
   return (
     <div
-      className={`relative ${className} ${
+      className={classNames(
+        "relative",
+        className,
         isFullscreen ? "fixed inset-0 overflow-hidden" : ""
-      }`}
+      )}
     >
       <Button
         onClick={toggleFullscreen}
