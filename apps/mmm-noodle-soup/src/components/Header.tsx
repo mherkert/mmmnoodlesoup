@@ -1,8 +1,8 @@
 import React from "react";
 import Logo from "./Logo";
 import { Link } from "gatsby";
-import Search from "./search/Search";
 import { Button } from "@headlessui/react";
+import { Search } from "./search/Search";
 
 const Header = () => {
   const isLoggedIn = false;

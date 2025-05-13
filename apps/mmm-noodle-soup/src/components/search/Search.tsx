@@ -1,108 +1,145 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import {
-  Combobox,
-  ComboboxButton,
-  ComboboxInput,
-  ComboboxOption,
-  ComboboxOptions,
-} from "@headlessui/react";
-import { graphql, Link } from "gatsby";
+import Downshift from "downshift";
+import classNames from "classnames";
+import { graphql, navigate } from "gatsby";
 import { useStaticQuery } from "gatsby";
 import { RecipeSearchResult } from "../../data/types";
+import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import { useFilteredRecipes } from "../../hooks/useFilteredRecipes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "../buttons/Button";
 
-type Recipe = {
-  title: string;
-  slug: string;
-};
-
-/**
- * TODO:
- * - this is not quite working yet; visually or keyboard-wise;
- * - what's up with only every other link working?
- * - add a clear button?
- * - add a loading state?
- * - add a no results state?
- */
-const Search = () => {
+export const Search = () => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const { recipes } = useStaticQuery(graphql`
     query {
       recipes: allSanityRecipe {
         nodes {
           id
           title
+          description
           slug {
             current
+          }
+          image {
+            asset {
+              gatsbyImageData(layout: CONSTRAINED, width: 30, height: 30)
+            }
           }
         }
       }
     }
   `) as { recipes: { nodes: RecipeSearchResult[] } };
 
-  // const recipes: Recipe[] = [
-  //   { title: "Nusskuchen", slug: "nusskuchen" },
-  //   { title: "Kaiserschmarrn", slug: "kaiserschmarrn" },
-  // ];
-
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe>();
-
-  const [query, setQuery] = useState("");
-
-  // todo: fuzzy search
-  const filteredRecipes =
-    query === ""
-      ? recipes.nodes
-      : recipes.nodes.filter((recipe) => {
-          return recipe.title.toLowerCase().includes(query.toLowerCase());
-        });
+  const [filteredRecipes] = useFilteredRecipes<RecipeSearchResult>(
+    recipes.nodes,
+    ["title", "description"],
+    searchTerm
+  );
 
   return (
-    <Combobox
-      value={selectedRecipe}
-      onChange={(recipe) => setSelectedRecipe(recipe as Recipe)}
-      onClose={() => setQuery("")}
+    <Downshift
+      onChange={(selection) => {
+        navigate(`/recipes/${selection.slug.current}`);
+      }}
+      onInputValueChange={(inputValue) => {
+        setSearchTerm(inputValue);
+      }}
+      itemToString={(item) => (item ? item.title : "")}
     >
-      <div className="relative ">
-        <ComboboxInput
-          placeholder="Find your new favourite recipe"
-          className="lg:w-[var(--search-input-width-lg)] md:w-[var(--search-input-width-md)] w-[var(--search-input-width-sm)] rounded-md py-2 px-2 text-sm/6 focus:outline-none data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-white"
-          displayValue={(recipe: { title: string }) =>
-            recipe ? recipe.title : ""
-          }
-          onChange={(event) => setQuery(event.target.value)}
-        />
-        <ComboboxButton
-          className="group absolute inset-y-0 right-0 px-2.5"
-          aria-label="Search"
-        >
-          <FontAwesomeIcon aria-hidden icon={faSearch} />
-        </ComboboxButton>
-      </div>
-      <ComboboxOptions
-        anchor="bottom start"
-        transition
-        className="absolute lg:w-[var(--search-input-width-lg)] md:w-[var(--search-input-width-md)] w-[var(--search-input-width-sm)] bg-white rounded-md py-2 px-2 shadow-lg [--anchor-gap:4px] border empty:invisible"
-        style={{
-          zIndex: 10,
-        }}
-      >
-        {filteredRecipes.map((recipe) => (
-          <ComboboxOption
-            data-active
-            data-focus
-            data-selected
-            data-hover
-            className="h-8 focus:bg-blue-500 active:border-purple-500 hover:bg-secondary-sage   data-selected:bg-blue-500 rounded-md"
-            key={recipe.slug.current}
-            value={recipe}
+      {({
+        getInputProps,
+        getItemProps,
+        getLabelProps,
+        getMenuProps,
+        getToggleButtonProps,
+        isOpen,
+        inputValue,
+        highlightedIndex,
+        selectedItem,
+        getRootProps,
+      }) => (
+        <div>
+          <div className="lg:w-[var(--search-input-width-lg)] md:w-[var(--search-input-width-md)] w-[var(--search-input-width-sm)] ">
+            <label {...getLabelProps()} className="sr-only">
+              Search a recipe
+            </label>
+            <div
+              className="bg-white flex shadow-sm  gap-0.5 rounded-md focus-within:ring-2 focus-within:ring-white 
+              focus-within:ring-offset-2 focus-within:ring-offset-primary"
+              {...getRootProps({}, { suppressRefError: true })}
+            >
+              <input
+                placeholder="Find your new favourite recipe"
+                className="lg:w-[var(--search-input-width-lg)] md:w-[var(--search-input-width-md)] w-[var(--search-input-width-sm)] rounded-md 
+               py-2 px-2 text-sm/6 focus:outline-none"
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    navigate(
+                      `/recipes?search=${encodeURIComponent(searchTerm)}`
+                    );
+                  }
+                }}
+                {...getInputProps()}
+              />
+              {/* <button
+                aria-label={"toggle menu"}
+                className="px-2"
+                type="button"
+                {...getToggleButtonProps()}
+              >
+                {isOpen ? (
+                  <FontAwesomeIcon icon={faChevronUp} />
+                ) : (
+                  <FontAwesomeIcon icon={faChevronDown} />
+                )}
+              </button> */}
+              <Button variant="ghost" size="sm" {...getToggleButtonProps()}>
+                {isOpen ? (
+                  <FontAwesomeIcon icon={faChevronUp} />
+                ) : (
+                  <FontAwesomeIcon icon={faChevronDown} />
+                )}
+              </Button>
+            </div>
+          </div>
+          <ul
+            className={`absolute rounded-md lg:w-[var(--search-input-width-lg)] md:w-[var(--search-input-width-md)] w-[var(--search-input-width-sm)]  bg-white mt-1 shadow-md max-h-80 overflow-scroll p-0 z-10 ${
+              !(isOpen && filteredRecipes.length) && "hidden"
+            }`}
+            {...getMenuProps()}
           >
-            <Link to={`/recipes/${recipe.slug.current}`}>{recipe.title}</Link>
-          </ComboboxOption>
-        ))}
-      </ComboboxOptions>
-    </Combobox>
+            {isOpen
+              ? filteredRecipes.map((item, index) => (
+                  <li
+                    className={classNames(
+                      highlightedIndex === index && "bg-primary-highlight",
+                      selectedItem === item && "font-bold",
+                      "py-2 px-3 shadow-sm flex gap-2"
+                    )}
+                    {...getItemProps({
+                      key: item.title,
+                      index,
+                      item,
+                    })}
+                  >
+                    <div>
+                      {item.image?.asset && (
+                        <GatsbyImage
+                          image={getImage(item.image?.asset)!}
+                          alt=""
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
+                    <div>{item.title}</div>
+                  </li>
+                ))
+              : null}
+          </ul>
+        </div>
+      )}
+    </Downshift>
   );
 };
-
-export default Search;

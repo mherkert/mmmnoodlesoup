@@ -64,7 +64,9 @@ export type RecipeSearchResult = Pick<
   Recipe,
   | "id"
   | "title"
+  | "description"
   | "slug"
+  | "image"
 >;
 
 export type RecipeSummary = Pick<

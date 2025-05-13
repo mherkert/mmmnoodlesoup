@@ -4,7 +4,7 @@ import { Button as HeadlessButton } from "@headlessui/react";
 
 type ButtonProps = {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
   active?: boolean;
   disabled?: boolean;
@@ -32,6 +32,8 @@ export const Button = ({
     secondary: "bg-secondary-sage text-white hover:bg-secondary-sage/90",
     outline:
       "border-2 border-primary text-primary hover:bg-primary hover:text-white hover:border-primary",
+    ghost: "bg-transparent text-primary  focus:outline-primary focus:outline-2 focus:outline-offset-2",
+
   };
 
   const sizes = {
@@ -44,6 +46,7 @@ export const Button = ({
     primary: "bg-primary-light text-white",
     secondary: "bg-secondary-sage text-white",
     outline: "bg-primary text-white",
+    ghost: "bg-transparent text-primary",
   };
 
   const disabledStyles = "opacity-50 cursor-not-allowed";
