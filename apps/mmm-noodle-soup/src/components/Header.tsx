@@ -1,11 +1,13 @@
 import React from "react";
 import Logo from "./Logo";
 import { Link } from "gatsby";
-import { Button } from "@headlessui/react";
+// import { Button } from "@headlessui/react";
 import { Search } from "./search/Search";
+import { Modal } from "./modal/Modal";
+import { Button } from "./buttons/Button";
 
 const Header = () => {
-  const isLoggedIn = false;
+  const isLoggedIn = true;
   const openAddRecipeModal = () => {};
   const openLoginModal = () => {};
   return (
@@ -25,12 +27,13 @@ const Header = () => {
         {/* Actions - right side */}
         <div className="flex items-center gap-4">
           {isLoggedIn ? (
-            <Button
-              onClick={openAddRecipeModal}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark outline-none focus:outline-2 focus:outline-offset-2 focus:outline-white"
-            >
-              Add Recipe
-            </Button>
+            <Modal ></Modal>
+            // <Button
+            //   onClick={openAddRecipeModal}
+            //   className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark outline-none focus:outline-2 focus:outline-offset-2 focus:outline-white"
+            // >
+            //   Add Recipe
+            // </Button>
           ) : (
             <Button
               onClick={openLoginModal}

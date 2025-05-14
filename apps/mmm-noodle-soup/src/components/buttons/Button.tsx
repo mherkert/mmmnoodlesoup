@@ -9,6 +9,7 @@ type ButtonProps = {
   active?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  inverse?: boolean;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
 } & React.HTMLAttributes<HTMLButtonElement>;
@@ -20,6 +21,7 @@ export const Button = ({
   active = false,
   disabled = false,
   loading = false,
+  inverse = false,
   type = "button",
   onClick,
   className,
@@ -27,19 +29,29 @@ export const Button = ({
 }: ButtonProps) => {
   const baseStyles = "rounded-md font-medium transition-colors";
 
+  /** TODO: redo button variants, colours and styles. this is messy */
   const variants = {
-    primary: "bg-primary text-white hover:bg-primary-light",
+    primary: "bg-primary text-white hover:bg-primary-light focus:outline-primary focus:outline-2 focus:outline-offset-2 outline-none",
     secondary: "bg-secondary-sage text-white hover:bg-secondary-sage/90",
     outline:
-      "border-2 border-primary text-primary hover:bg-primary hover:text-white hover:border-primary",
+      "border-2 border-primary text-primary hover:bg-primary hover:text-white hover:border-primary focus:outline-primary focus:outline-2 focus:outline-offset-2 outline-none",
     ghost: "bg-transparent text-primary  focus:outline-primary focus:outline-2 focus:outline-offset-2",
-
   };
 
+  const inverseVariants = {
+    primary: "bg-inverse text-primary hover:bg-inverse-light",
+    secondary: "bg-secondary-sage text-primary hover:bg-secondary-sage/90",
+    outline:
+      "border-2 border-white text-white hover:bg-primary hover:text-white hover:border-primary focus:outline-white focus:outline-2 focus:outline-offset-2 outline-none",
+    ghost: "bg-transparent text-primary  focus:outline-primary focus:outline-2 focus:outline-offset-2",
+  };
+
+
+
   const sizes = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2",
-    lg: "px-6 py-3 text-lg",
+    sm: "px-2 py-1 text-sm",
+    md: "px-3 py-1.5",
+    lg: "px-5 py-2 text-lg",
   };
 
   const activeStyles = {
@@ -59,7 +71,7 @@ export const Button = ({
       onClick={onClick}
       className={classNames(
         baseStyles,
-        variants[variant],
+        inverse ? inverseVariants[variant] : variants[variant],
         sizes[size],
         active && activeStyles[variant],
         (disabled || loading) && disabledStyles,
