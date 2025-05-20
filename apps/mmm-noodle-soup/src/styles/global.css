@@ -8,6 +8,44 @@
   --search-input-width-lg: 500px;
   --search-input-width-md: 300px;
   --search-input-width-sm: 250px;
+
+  --editor-title-color-base: hsl(0, 100%, 50%);
+  --editor-title-color-light: hsl(0, 100%, 98%);
+  --editor-title-color-dark: hsl(0, 100%, 30%);
+
+  --editor-description-color-base: hsl(30, 100%, 50%);
+  --editor-description-color-light: hsl(30, 100%, 98%);
+  --editor-description-color-dark: hsl(30, 100%, 30%);
+
+  --editor-tag-color-base: hsl(60, 100%, 50%);
+  --editor-tag-color-light: hsl(60, 100%, 98%);
+  --editor-tag-color-dark: hsl(60, 100%, 30%);
+
+  --editor-duration-color-base: hsl(120, 100%, 50%);
+  --editor-duration-color-light: hsl(120, 100%, 98%);
+  --editor-duration-color-dark: hsl(120, 100%, 30%);
+  --editor-duration-preparation-color-light: hsl(120, 100%, 87%);
+  --editor-duration-waiting-color-light: hsl(120, 100%, 90%);
+  --editor-duration-cooking-color-light: hsl(120, 100%, 93%);
+
+  --editor-servings-count-color-base: hsl(180, 100%, 50%);
+  --editor-servings-count-color-light: hsl(180, 100%, 98%);
+  --editor-servings-count-color-dark: hsl(180, 100%, 30%);
+
+  --editor-ingredients-color-base: hsl(240, 100%, 50%);
+  --editor-ingredients-color-light: hsl(240, 100%, 98%);
+  --editor-ingredients-color-dark: hsl(240, 100%, 30%);
+  --editor-ingredients-title-color-light: hsl(240, 100%, 84%);
+  --editor-ingredients-amount-color-light: hsl(240, 100%, 87%);
+  --editor-ingredients-unit-color-light: hsl(240, 100%, 90%);
+  --editor-ingredients-name-color-light: hsl(240, 100%, 93%);
+  --editor-ingredients-comment-color-light: hsl(240, 100%, 95%);
+
+  --editor-instructions-color-base: hsl(270, 100%, 50%);
+  --editor-instructions-color-light: hsl(270, 100%, 98%);
+  --editor-instructions-color-dark: hsl(270, 100%, 30%);
+  --editor-instructions-title-color-light: hsl(270, 100%, 84%);
+  --editor-instruction-color-light: hsl(270, 100%, 93%);
 }
 
 @layer base {

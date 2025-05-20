@@ -1,9 +1,10 @@
 import React from "react";
+import { RecipeEditor } from "../../components/recipes/editor/RecipeEditor";
 
 const AddRecipePage = () => {
   return (
     <>
-      <div>this is add recipe page</div>
+      <RecipeEditor />
     </>
   );
 };
