@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:global(.slate-placeholder) {
+  @apply text-gray-400 italic;
+}
+
 :root {
   --search-input-width-lg: 500px;
   --search-input-width-md: 300px;

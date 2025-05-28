@@ -11,7 +11,7 @@ type ButtonProps = {
   loading?: boolean;
   inverse?: boolean;
   type?: "button" | "submit" | "reset";
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
 } & React.HTMLAttributes<HTMLButtonElement>;
 
 export const Button = ({
@@ -31,11 +31,12 @@ export const Button = ({
 
   /** TODO: redo button variants, colours and styles. this is messy */
   const variants = {
-    primary: "bg-primary text-white hover:bg-primary-light focus:outline-primary focus:outline-2 focus:outline-offset-2 outline-none",
+    primary:
+      "bg-primary text-white hover:bg-primary-light focus:outline-primary focus:outline-2 focus:outline-offset-2 outline-none",
     secondary: "bg-secondary-sage text-white hover:bg-secondary-sage/90",
     outline:
       "border-2 border-primary text-primary hover:bg-primary hover:text-white hover:border-primary focus:outline-primary focus:outline-2 focus:outline-offset-2 outline-none",
-    ghost: "bg-transparent text-primary  focus:outline-primary focus:outline-2 focus:outline-offset-2",
+    ghost: "bg-transparent text-primary focus:outline-primary focus:outline-1",
   };
 
   const inverseVariants = {
@@ -43,10 +44,8 @@ export const Button = ({
     secondary: "bg-secondary-sage text-primary hover:bg-secondary-sage/90",
     outline:
       "border-2 border-white text-white hover:bg-primary hover:text-white hover:border-primary focus:outline-white focus:outline-2 focus:outline-offset-2 outline-none",
-    ghost: "bg-transparent text-primary  focus:outline-primary focus:outline-2 focus:outline-offset-2",
+    ghost: "bg-transparent text-white focus:outline-white focus:outline-1",
   };
-
-
 
   const sizes = {
     sm: "px-2 py-1 text-sm",
