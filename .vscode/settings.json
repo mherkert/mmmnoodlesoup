@@ -1,0 +1,12 @@
+{
+  "javascript.preferences.organizeImports": {
+    "enabled": true,
+    "type": "explicit",
+    "style": "none"
+  },
+  "typescript.preferences.organizeImports": {
+    "enabled": true,
+    "type": "explicit",
+    "style": "none"
+  }
+}

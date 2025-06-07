@@ -6,12 +6,12 @@ export type Ingredient = {
 };
 
 export type GroupedIngredients = {
-  title: string;
+  title?: string;
   ingredients: Ingredient[];
 };
 
 export type GroupedInstructions = {
-  title: string;
+  title?: string;
   instructions: string[];
 };
 
@@ -45,13 +45,13 @@ export type Recipe = {
   id: string;
   title: string;
   slug: Slug;
-  description: string;
-  source: string;
+  description?: string;
+  source?: string;
   image?: any; // TODO: fix type
   imageCredit?: string;
-  tags: Tag[];
-  servingsCount: number;
-  duration: Duration;
+  tags?: Tag[];
+  servingsCount?: number;
+  duration?: Duration;
   metadata: Metadata;
   groupedIngredients: GroupedIngredients[];
   groupedInstructions: GroupedInstructions[];
@@ -60,13 +60,14 @@ export type Recipe = {
   user: User;
 };
 
+export type NewRecipe = Omit<
+  Recipe,
+  "id" | "slug" | "_createdAt" | "_updatedAt" | "user" | "source" | "metadata"
+>;
+
 export type RecipeSearchResult = Pick<
   Recipe,
-  | "id"
-  | "title"
-  | "description"
-  | "slug"
-  | "image"
+  "id" | "title" | "description" | "slug" | "image"
 >;
 
 export type RecipeSummary = Pick<

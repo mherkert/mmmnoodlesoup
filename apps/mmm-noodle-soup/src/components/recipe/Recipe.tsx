@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card } from "../Card";
+import { Card } from "../card/Card";
 import { Recipe as RecipeType } from "../../data/types";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import { Tags } from "../tags/Tags";

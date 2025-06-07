@@ -10,9 +10,16 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-export const Toolbar = () => {
+type ToolbarProps = {
+  onPreview: () => void;
+};
+
+export const Toolbar = ({ onPreview }: ToolbarProps) => {
   const editor = useSlate();
 
+
+
+  /** TODO: Add more buttons */
   return (
     <div className="flex flex-col md:flex-row mb-2 h-10 rounded-md justify-between">
       <div className="flex bg-white rounded-md border border-gray-200">
@@ -50,7 +57,7 @@ export const Toolbar = () => {
           <FontAwesomeIcon icon={faPencil} />
           Edit
         </Button>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" onClick={onPreview}>
           <FontAwesomeIcon icon={faEye} />
           Preview
         </Button>

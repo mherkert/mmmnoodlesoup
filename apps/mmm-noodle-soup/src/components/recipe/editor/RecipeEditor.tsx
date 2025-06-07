@@ -40,10 +40,8 @@ import {
   TitleType,
   WrapType,
 } from "./types";
-
-type RecipeEditorProps = {
-  recipe?: Recipe;
-};
+import { recipeToSlate, slateToRecipe } from "./transform";
+import { createMockRecipe } from "../../../__mocks__/recipes";
 
 export const BLOCK_TYPES = [
   TitleType,
@@ -93,22 +91,35 @@ const MARK_HOTKEYS = {
   "Control+s": ServingsCountType,
 };
 
+type RecipeEditorProps = {
+  recipe?: Recipe;
+};
+
+/**
+ * A custom richt text editor for recipes. Very much a work in progress.
+ */
 export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
+  // const mockRecipe: Descendant[] = recipeToSlate(createMockRecipe());
+
+  const initialValue: Descendant[] = [
+    {
+      type: "paragraph",
+      children: [{ text: "" }],
+    },
+  ];
+
+  // console.log("mockRecipe", mockRecipe);
+  // const initialValue: Descendant[] = mockRecipe;
+
   const [editor] = useState(() => withReact(withHistory(createEditor())));
   const editableRef = useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState<Descendant[]>(initialValue);
 
   useEffect(() => {
     if (editableRef.current) {
       editableRef.current.focus();
     }
   }, []);
-
-  const emptyRecipe: Descendant[] = [
-    {
-      type: "paragraph",
-      children: [{ text: "" }],
-    },
-  ];
 
   const renderLeaf = useCallback(
     ({ attributes, children, leaf }: RenderLeafProps) => {
@@ -227,30 +238,38 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
       }
     }
   };
+
+  const handlePreview = () => {
+    const recipe = slateToRecipe(value);
+    console.log("preview");
+    console.log({ recipe });
+  };
+
   return (
-    <div>
-      {/* <div className="bg-white rounded-lg border border-gray-200"> */}
-      <Slate
-        editor={editor}
-        initialValue={emptyRecipe}
-        onChange={(value) => {
-          console.log("Slate value:", value);
+    <Slate
+      editor={editor}
+      initialValue={initialValue}
+      onChange={(value: Descendant[]) => {
+        setValue(value);
+        // console.log("Slate value:", value);
+        console.log(JSON.stringify(value, null, 2));
+      }}
+    >
+      <Toolbar onPreview={handlePreview} />
+      <Editable
+        ref={editableRef}
+        className="bg-white rounded-md border border-gray-200 outline-none p-2"
+        renderElement={renderElement}
+        placeholder="Enter some recipe text…"
+        renderPlaceholder={({ children, attributes }) => {
+          delete attributes.style.top;
+          return <span {...attributes}>{children}</span>;
         }}
-      >
-        <Toolbar />
-        <Editable
-          ref={editableRef}
-          className="bg-white rounded-md border border-gray-200 outline-none p-2"
-          renderElement={renderElement}
-          placeholder="Enter some recipe text…"
-          renderPlaceholder={({ children, attributes }) => {
-            delete attributes.style.top;
-            return <span {...attributes}>{children}</span>;
-          }}
-          renderLeaf={renderLeaf}
-          onKeyDown={handleKeyDown}
-        />
-      </Slate>
-    </div>
+        // need to set min height here to override slate's inline min height
+        style={{ minHeight: "500px" }}
+        renderLeaf={renderLeaf}
+        onKeyDown={handleKeyDown}
+      />
+    </Slate>
   );
 };

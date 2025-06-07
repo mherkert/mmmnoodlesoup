@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import { Instructions } from "./RecipeInstructions";
-import { Recipe } from "../../data/types";
 import React from "react";
 import { createMockRecipe } from "../../__mocks__/recipes";
 import { debug } from "jest-preview";

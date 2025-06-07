@@ -129,8 +129,8 @@ export const createMockRecipe = (overrides: Partial<Recipe> = {}): Recipe => {
     },
     duration: {
       preparation: 10,
+      waiting: 30,
       cooking: 20,
-      waiting: 0,
     },
     source: "https://example.com/mock",
     tags: [
@@ -148,32 +148,37 @@ export const createMockRecipe = (overrides: Partial<Recipe> = {}): Recipe => {
     slug: {
       current: "recipe-mock",
     },
-    servingsCount: 2,
     metadata: {
       measurementSystem: "METRIC",
     },
-
+    servingsCount: 2,
     groupedIngredients: [
       {
-        title: "Ingredients Title",
+        title: "Ingredients Title 1",
         ingredients: [
           {
-            name: "Test Ingredient 1",
             amount: 100,
-            unit: "g",
+            name: "Test Ingredient 1",
             comment: "Comment 1",
           },
           {
-            name: "Test Ingredient 2",
             amount: 2,
             unit: "tbsp",
-            comment: "Comment 2",
+            name: "Test Ingredient 2",
           },
           {
             name: "Test Ingredient 3",
+          },
+        ],
+      },
+      {
+        title: "Ingredients Title 2",
+        ingredients: [
+          {
             amount: 1,
             unit: "cup",
-            comment: "Comment 3",
+            name: "Test Ingredient 4",
+            comment: "Comment 4",
           },
         ],
       },

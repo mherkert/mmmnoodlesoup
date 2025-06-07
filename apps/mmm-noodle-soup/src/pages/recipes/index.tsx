@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { RecipePreview } from "../../components/recipes/RecipePreview";
+import { RecipePreview } from "../../components/recipe/RecipePreview";
 import { graphql, PageProps } from "gatsby";
 import { useLocation } from "@reach/router";
 import { RecipeSummary } from "../../data/types";
@@ -11,7 +11,6 @@ type DataProps = {
     nodes: RecipeSummary[];
   };
 };
-
 
 const RecipesPage = ({ data: { recipes } }: PageProps<DataProps>) => {
   const location = useLocation();
