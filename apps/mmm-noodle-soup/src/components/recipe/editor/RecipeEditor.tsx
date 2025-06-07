@@ -19,77 +19,18 @@ import { Recipe } from "../../../data/types";
 import { isHotkey } from "is-hotkey";
 import { RecipeNode } from "./RecipeNode";
 import { Toolbar } from "./Toolbar";
-import {
-  BlockType,
-  DescriptionType,
-  DurationCookingType,
-  DurationPreparationType,
-  DurationWaitingType,
-  IngredientsAmountType,
-  IngredientsCommentType,
-  IngredientsNameType,
-  IngredientsTitleType,
-  IngredientsType,
-  IngredientsUnitType,
-  InstructionType,
-  InstructionsTitleType,
-  InstructionsType,
-  MarkType,
-  ServingsCountType,
-  TagType,
-  TitleType,
-  WrapType,
-} from "./types";
+import { BlockType, MarkType, WrapType } from "./types";
 import { recipeToSlate, slateToRecipe } from "./transform";
 import { createMockRecipe } from "../../../__mocks__/recipes";
-
-export const BLOCK_TYPES = [
-  TitleType,
-  DescriptionType,
-  InstructionsTitleType,
-  IngredientsTitleType,
-  InstructionType,
-] as const;
-
-export const WRAP_TYPES = [InstructionsType, IngredientsType] as const;
-export const MARK_TYPES = [
-  TagType,
-  DurationPreparationType,
-  DurationWaitingType,
-  DurationCookingType,
-  IngredientsAmountType,
-  IngredientsUnitType,
-  IngredientsNameType,
-  IngredientsCommentType,
-  ServingsCountType,
-] as const;
-
-const BLOCK_HOTKEYS = {
-  "Control+t": TitleType,
-  "Control+d": DescriptionType,
-  "Control+m": InstructionsTitleType,
-  "Control+i": IngredientsTitleType,
-  "Control+e": InstructionType,
-};
-
-const ENTER_HOTKEY = "Enter";
-
-const WRAP_HOTKEYS = {
-  "Control+Shift+m": InstructionsType,
-  "Control+Shift+i": IngredientsType,
-};
-
-const MARK_HOTKEYS = {
-  "Control+g": TagType,
-  "Control+p": DurationPreparationType,
-  "Control+w": DurationWaitingType,
-  "Control+c": DurationCookingType,
-  "Control+a": IngredientsAmountType,
-  "Control+u": IngredientsUnitType,
-  "Control+n": IngredientsNameType,
-  "Control+o": IngredientsCommentType,
-  "Control+s": ServingsCountType,
-};
+import {
+  BLOCK_HOTKEYS,
+  BLOCK_TYPES,
+  ENTER_HOTKEY,
+  MARK_HOTKEYS,
+  MARK_TYPES,
+  WRAP_HOTKEYS,
+  WRAP_TYPES,
+} from "./constants";
 
 type RecipeEditorProps = {
   recipe?: Recipe;
@@ -112,6 +53,7 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
   // const initialValue: Descendant[] = mockRecipe;
 
   const [editor] = useState(() => withReact(withHistory(createEditor())));
+  const [validationError, setValidationError] = useState<string | null>(null);
   const editableRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState<Descendant[]>(initialValue);
 
@@ -240,9 +182,15 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
   };
 
   const handlePreview = () => {
-    const recipe = slateToRecipe(value);
-    console.log("preview");
-    console.log({ recipe });
+    try {
+      // TODO handle recipe and preview progression
+      const recipe = slateToRecipe(value);
+
+      setValidationError(null);
+    } catch (error) {
+      // TODO: handle validation errors
+      setValidationError(error instanceof Error ? error.message : "Unknown error");
+    }
   };
 
   return (
@@ -252,7 +200,7 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
       onChange={(value: Descendant[]) => {
         setValue(value);
         // console.log("Slate value:", value);
-        console.log(JSON.stringify(value, null, 2));
+        // console.log(JSON.stringify(value, null, 2));
       }}
     >
       <Toolbar onPreview={handlePreview} />

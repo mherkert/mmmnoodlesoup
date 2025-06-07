@@ -2,6 +2,8 @@ import React, { forwardRef, useId } from "react";
 import { INLINE_TAGS, LABELS, recipeElementColorVars } from "./constants";
 import classNames from "classnames";
 import { BlockType, WrapType, MarkType } from "./types";
+import { Validated } from "./Validated";
+
 type RecipeNodeProps = {
   children?: React.ReactNode;
   type: BlockType | MarkType | WrapType;
@@ -43,7 +45,7 @@ export const RecipeNode = forwardRef<HTMLElement, RecipeNodeProps>(
           {LABELS[type]}
         </span>
 
-        {children}
+        <Validated type={type}>{children}</Validated>
       </Component>
     );
   }

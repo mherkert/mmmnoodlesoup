@@ -1,5 +1,5 @@
 import { createMockRecipe } from "../../../__mocks__/recipes";
-import { recipeToSlate, slateToRecipe, validateRecipe } from "./transform";
+import { recipeToSlate, slateToRecipe } from "./transform";
 import { Descendant, Element } from "slate";
 import { CustomText } from "./slate";
 import { NewRecipe } from "../../../data/types";
@@ -240,55 +240,4 @@ describe("transform utility", () => {
       ).toBe(true);
     });
   });
-});
-
-describe("validateRecipe", () => {
-  it("should validate required fields", () => {
-    expect(() => {
-      validateRecipe({});
-    }).toThrow("Title is required");
-
-    expect(() => {
-      validateRecipe({
-        title: "Test Recipe",
-        groupedIngredients: [],
-      });
-    }).toThrow("Ingredients are required");
-
-    expect(() => {
-      validateRecipe({
-        title: "Test Recipe",
-      });
-    }).toThrow("Ingredients are required");
-
-    expect(() => {
-      validateRecipe({
-        title: "Test Recipe",
-        groupedIngredients: [{ ingredients: [{ name: "Test Ingredient" }] }],
-      });
-    }).toThrow("Instructions are required");
-
-    // Test with falsy but valid values
-    expect(() => {
-      validateRecipe({
-        title: "", // empty string is valid
-      });
-    }).toThrow("Title is required");
-  });
-
-  expect(() => {
-    validateRecipe({
-      title: "Test Recipe",
-      groupedIngredients: [{ ingredients: [] }],
-    });
-  }).toThrow("Ingredients are required");
-
-  expect(() => {
-    validateRecipe({
-      title: "Test Recipe",
-      groupedIngredients: [{ ingredients: [{ name: "Test Ingredient" }] }],
-      groupedInstructions: [{ instructions: [] }],
-    });
-  }).toThrow("Instructions are required");
-
 });

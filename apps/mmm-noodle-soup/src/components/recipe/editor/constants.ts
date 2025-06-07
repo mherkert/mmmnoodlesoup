@@ -57,6 +57,55 @@ export const INLINE_TAGS = [
   "sup",
 ];
 
+export const BLOCK_TYPES = [
+  TitleType,
+  DescriptionType,
+  InstructionsTitleType,
+  IngredientsTitleType,
+  InstructionType,
+] as const;
+
+export const WRAP_TYPES = [InstructionsType, IngredientsType] as const;
+export const MARK_TYPES = [
+  TagType,
+  DurationPreparationType,
+  DurationWaitingType,
+  DurationCookingType,
+  IngredientsAmountType,
+  IngredientsUnitType,
+  IngredientsNameType,
+  IngredientsCommentType,
+  ServingsCountType,
+] as const;
+
+export const BLOCK_HOTKEYS = {
+  "Control+t": TitleType,
+  "Control+d": DescriptionType,
+  "Control+m": InstructionsTitleType,
+  "Control+i": IngredientsTitleType,
+  "Control+e": InstructionType,
+};
+
+export const ENTER_HOTKEY = "Enter";
+
+export const WRAP_HOTKEYS = {
+  "Control+Shift+m": InstructionsType,
+  "Control+Shift+i": IngredientsType,
+};
+
+export const MARK_HOTKEYS = {
+  "Control+g": TagType,
+  "Control+p": DurationPreparationType,
+  "Control+w": DurationWaitingType,
+  "Control+c": DurationCookingType,
+  "Control+a": IngredientsAmountType,
+  "Control+u": IngredientsUnitType,
+  "Control+n": IngredientsNameType,
+  "Control+o": IngredientsCommentType,
+  "Control+s": ServingsCountType,
+};
+
+
 export const recipeElementColorVars: Record<
   string,
   { border: string; background: string; "label-background": string }

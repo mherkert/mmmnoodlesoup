@@ -33,6 +33,8 @@ import {
   InstructionElement,
   ParagraphElement,
 } from "./slate";
+import { validateRecipe } from "./utils/validate";
+import { safeNumber } from "./utils/validate";
 
 export const recipeToSlate = (recipe: Recipe): Descendant[] => {
   const slate: Descendant[] = [];
@@ -326,44 +328,3 @@ export const slateToRecipe = (slate: Descendant[]): NewRecipe => {
   }
   return validateRecipe(recipeInTraining);
 };
-
-export function validateRecipe(obj: Partial<NewRecipe>): NewRecipe {
-  if (!obj.title) {
-    throw new Error("Title is required");
-  }
-  if (
-    !obj.groupedIngredients ||
-    obj.groupedIngredients.length === 0 ||
-    obj.groupedIngredients.some((group) => group.ingredients.length === 0)
-  ) {
-    throw new Error("Ingredients are required");
-  }
-  if (
-    !obj.groupedInstructions ||
-    obj.groupedInstructions.length === 0 ||
-    obj.groupedInstructions.some((group) => group.instructions.length === 0)
-  ) {
-    throw new Error("Instructions are required");
-  }
-  return obj as NewRecipe;
-}
-
-type ConversionSucceeded = {
-  kind: "success";
-  value: number;
-};
-
-type ConversionFailed = {
-  kind: "failure";
-  reason: string;
-};
-
-type ConversionResult = ConversionSucceeded | ConversionFailed;
-
-function safeNumber(s: string): ConversionResult {
-  const number = Number(s);
-  if (isNaN(number)) {
-    return { kind: "failure", reason: "Not a number" };
-  }
-  return { kind: "success", value: number };
-}
