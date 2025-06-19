@@ -5,7 +5,7 @@ import { graphql, navigate } from "gatsby";
 import { useStaticQuery } from "gatsby";
 import { RecipeSearchResult } from "../../data/types";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
-import { useFilteredRecipes } from "../../hooks/useFilteredRecipes";
+import { useFuzzySearch } from "../../hooks/useFuzzySearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "../buttons/Button";
@@ -32,7 +32,7 @@ export const Search = () => {
     }
   `) as { recipes: { nodes: RecipeSearchResult[] } };
 
-  const [filteredRecipes] = useFilteredRecipes<RecipeSearchResult>(
+  const filteredRecipes = useFuzzySearch<RecipeSearchResult>(
     recipes.nodes,
     ["title", "description"],
     searchTerm
@@ -61,7 +61,7 @@ export const Search = () => {
         getRootProps,
       }) => (
         <div>
-          <div className="lg:w-[var(--search-input-width-lg)] md:w-[var(--search-input-width-md)] w-[var(--search-input-width-sm)] ">
+          <div className="lg:w-[var(--search-input-width-lg)] md:w-[var(--search-input-width-md)] w-[var(--search-input-width-sm)]">
             <label {...getLabelProps()} className="sr-only">
               Search a recipe
             </label>
@@ -83,18 +83,6 @@ export const Search = () => {
                 }}
                 {...getInputProps()}
               />
-              {/* <button
-                aria-label={"toggle menu"}
-                className="px-2"
-                type="button"
-                {...getToggleButtonProps()}
-              >
-                {isOpen ? (
-                  <FontAwesomeIcon icon={faChevronUp} />
-                ) : (
-                  <FontAwesomeIcon icon={faChevronDown} />
-                )}
-              </button> */}
               <Button variant="ghost" size="sm" {...getToggleButtonProps()}>
                 {isOpen ? (
                   <FontAwesomeIcon icon={faChevronUp} />

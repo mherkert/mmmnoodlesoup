@@ -71,8 +71,12 @@ const RecipeFull = ({
           <Card.Description>{recipe.description}</Card.Description>
           <Card.Separator />
           <RecipeInformation className="ps-4 pe-4">
-            <Tags className="mb-4" tags={recipe.tags} link={true} />
-            <Duration duration={recipe.duration} showDetails={true} />
+            {recipe.tags && (
+              <Tags className="mb-4" tags={recipe.tags} link={true} />
+            )}
+            {recipe.duration && (
+              <Duration duration={recipe.duration} showDetails={true} />
+            )}
           </RecipeInformation>
         </div>
       </Card.Header>
@@ -95,7 +99,7 @@ const RecipeFull = ({
               on {formatDate(recipe._createdAt)}
             </span>
           </span>{" "}
-          | <Source source={recipe.source} />
+          {recipe.source && <Source source={recipe.source} />}
         </div>
       </Card.Footer>
     </Card>

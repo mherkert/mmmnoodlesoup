@@ -1,10 +1,8 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { RecipePreview } from "../../components/recipe/RecipePreview";
 import { graphql, PageProps } from "gatsby";
-import { useLocation } from "@reach/router";
 import { RecipeSummary } from "../../data/types";
-import Fuse from "fuse.js";
-import { useFilteredRecipes } from "../../hooks/useFilteredRecipes";
+import { useRecipeFilter } from "../../hooks/useRecipeFilter";
 
 type DataProps = {
   recipes: {
@@ -13,17 +11,13 @@ type DataProps = {
 };
 
 const RecipesPage = ({ data: { recipes } }: PageProps<DataProps>) => {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const searchTerm = searchParams.get("search");
-  const [filteredRecipes] = useFilteredRecipes(
-    recipes.nodes,
-    ["title", "description"],
-    searchTerm
+  const [filteredRecipes, queryTerm, queryTags] = useRecipeFilter(
+    recipes.nodes
   );
 
   return (
     <>
+      {/* TODO: <TagsFilter currentTags={tags} /> */}
       <section className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
         {filteredRecipes.map((recipe: RecipeSummary) => (
           <RecipePreview
@@ -33,10 +27,8 @@ const RecipesPage = ({ data: { recipes } }: PageProps<DataProps>) => {
           />
         ))}
       </section>
-      {searchTerm && filteredRecipes.length === 0 && (
-        <div className="text-center text-gray-500">
-          No recipes found matching "{searchTerm}"
-        </div>
+      {filteredRecipes.length === 0 && (
+        <RecipesNotFoundMessage queryTerm={queryTerm} queryTags={queryTags} />
       )}
     </>
   );
@@ -80,3 +72,26 @@ export const query = graphql`
     }
   }
 `;
+
+const RecipesNotFoundMessage = ({
+  queryTerm,
+  queryTags,
+}: {
+  queryTerm: string | null;
+  queryTags: string[] | null;
+}) => {
+  const reason = [
+    queryTerm ? `search term "${queryTerm}"` : null,
+    queryTags && queryTags?.length > 0
+      ? `tags "${queryTags?.join(", ")}"`
+      : null,
+  ]
+    .filter(Boolean)
+    .join(" and ");
+
+  return (
+    <div className="text-center text-gray-500">
+      No recipes found for {reason}.
+    </div>
+  );
+};

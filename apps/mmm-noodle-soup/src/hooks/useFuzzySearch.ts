@@ -1,10 +1,10 @@
 import Fuse, { FuseResult } from "fuse.js";
 import { useMemo } from "react";
 
-export const useFilteredRecipes = <T>(
+export const useFuzzySearch = <T>(
   data: T[],
   keys: string[],
-  searchQuery: string | null
+  searchQuery: string | null,
 ) => {
   const fuse = useMemo(
     () =>
@@ -21,5 +21,5 @@ export const useFilteredRecipes = <T>(
     return fuse.search(searchQuery).map((result: FuseResult<T>) => result.item);
   }, [searchQuery, fuse]);
 
-  return [filteredRecipes];
+  return filteredRecipes;
 };

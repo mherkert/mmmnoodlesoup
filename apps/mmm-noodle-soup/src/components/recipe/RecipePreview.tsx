@@ -49,8 +49,8 @@ export const RecipePreview = ({
           )}
         </div>
         <Card.Footer className="flex justify-between">
-          <Duration duration={recipe.duration} />
-          <Tags tags={recipe.tags} max={2} />
+          {recipe.duration && <Duration duration={recipe.duration} />}
+          {recipe.tags && <Tags tags={recipe.tags} max={2} />}
         </Card.Footer>
       </Card>
     </Link>

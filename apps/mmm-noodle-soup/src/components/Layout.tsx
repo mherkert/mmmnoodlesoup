@@ -37,7 +37,7 @@ const Layout = ({
 };
 
 const Content = ({ children }: { children: React.ReactNode }) => {
-  return <section className="ps-4 pe-4 md:p-8 flex-1">{children}</section>;
+  return <main className="ps-4 pe-4 md:p-8 flex-1">{children}</main>;
 };
 
 export default Layout;
