@@ -1,7 +1,7 @@
 import React from "react";
-import { Recipe } from "../../components/recipe/Recipe";
+import { Recipe } from "../components/recipe/Recipe";
 import { graphql, PageProps } from "gatsby";
-import { Recipe as RecipeType } from "../../data/types";
+import { Recipe as RecipeType } from "../data/types";
 
 type DataProps = {
   recipe: RecipeType;
@@ -12,7 +12,7 @@ type PageContext = {
 };
 
 const RecipePage = ({
-  data: { recipe },
+  data: { recipe }
 }: PageProps<DataProps, PageContext>) => {
   return <Recipe recipe={recipe} />;
 };

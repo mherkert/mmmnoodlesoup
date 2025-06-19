@@ -24,7 +24,7 @@ exports.createPages = async ({ graphql, actions }) => {
   recipes.forEach((recipe) => {
     createPage({
       path: `/recipes/${recipe.slug.current}`,
-      component: path.resolve("./src/pages/recipes/[slug].tsx"),
+      component: path.resolve("./src/templates/recipe.tsx"),
       context: {
         slug: recipe.slug.current,
       },

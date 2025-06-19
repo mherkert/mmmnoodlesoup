@@ -6,6 +6,27 @@ import {
   useFullscreenContext,
 } from "../contexts/FullscreenContext";
 
+// Filter out Gatsby-specific props and any props with special characters
+const filterGatsbyProps = (props: any) => {
+  const filteredProps: any = {};
+
+  Object.keys(props).forEach((key) => {
+    // Skip Gatsby-specific props
+    if (key === "pageContext" || key === "serverData" || key === "pageResources") {
+      return;
+    }
+
+    // Skip props that might contain special characters or be invalid DOM attributes
+    if (key.includes("*") || key.includes("$") || key.startsWith("_")) {
+      return;
+    }
+
+    filteredProps[key] = props[key];
+  });
+
+  return filteredProps;
+};
+
 const FullscreenAware = ({
   children,
   hideInFullscreen = true,
@@ -17,12 +38,15 @@ const FullscreenAware = ({
 
   return isFullscreen && hideInFullscreen ? null : <>{children}</>;
 };
+
 const Layout = ({
   children,
   ...props
 }: { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => {
+  const filteredProps = filterGatsbyProps(props);
+
   return (
-    <div className="h-full flex flex-col" {...props}>
+    <div className="h-full flex flex-col" {...filteredProps}>
       <FullscreenProvider>
         <FullscreenAware>
           <Header />

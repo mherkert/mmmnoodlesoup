@@ -1,18 +1,45 @@
 import React from "react";
 import classNames from "classnames";
 
+// TODO: refactor, as this also exists in Layout: Filter out Gatsby-specific props and any props with special characters
+const filterGatsbyProps = (props: any) => {
+  const filteredProps: any = {};
+
+  Object.keys(props).forEach((key) => {
+    // Skip Gatsby-specific props
+    if (
+      key === "pageContext" ||
+      key === "serverData" ||
+      key === "pageResources"
+    ) {
+      return;
+    }
+
+    // Skip props that might contain special characters or be invalid DOM attributes
+    if (key.includes("*") || key.includes("$") || key.startsWith("_")) {
+      return;
+    }
+
+    filteredProps[key] = props[key];
+  });
+
+  return filteredProps;
+};
+
 export const Card = ({
   children,
   className,
   ...props
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
+  const filteredProps = filterGatsbyProps(props);
+
   return (
     <article
       className={classNames(
         "bg-secondary-light rounded-lg shadow-md overflow-hidden border border-primary/10 hover:shadow-lg transition-shadow pb-2",
         className
       )}
-      {...props}
+      {...filteredProps}
     >
       {children}
     </article>
@@ -25,7 +52,12 @@ type TitleProps = {
   className?: string;
 };
 
-const Title = ({ as, id, children, className }: React.PropsWithChildren<TitleProps>) => {
+const Title = ({
+  as,
+  id,
+  children,
+  className,
+}: React.PropsWithChildren<TitleProps>) => {
   const As = as || "h1";
   return (
     <As id={id} className={classNames("ps-4 pe-4 pt-2 pb-2", className)}>
@@ -59,8 +91,10 @@ const Footer = ({
   className,
   ...props
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
+  const filteredProps = filterGatsbyProps(props);
+
   return (
-    <footer className={classNames("ps-4 pe-4", className)} {...props}>
+    <footer className={classNames("ps-4 pe-4", className)} {...filteredProps}>
       {children}
     </footer>
   );
@@ -71,8 +105,10 @@ const Content = ({
   className,
   ...props
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
+  const filteredProps = filterGatsbyProps(props);
+
   return (
-    <div className={classNames("ps-4 pe-4", className)} {...props}>
+    <div className={classNames("ps-4 pe-4", className)} {...filteredProps}>
       {children}
     </div>
   );
@@ -83,8 +119,10 @@ const Header = ({
   className,
   ...props
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
+  const filteredProps = filterGatsbyProps(props);
+
   return (
-    <div className={classNames(className)} {...props}>
+    <div className={classNames(className)} {...filteredProps}>
       {children}
     </div>
   );
