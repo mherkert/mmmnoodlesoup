@@ -5,7 +5,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const result = await graphql(`
     query {
-      allSanityRecipe {
+      recipes: allSanityRecipe {
         nodes {
           slug {
             current
@@ -19,7 +19,7 @@ exports.createPages = async ({ graphql, actions }) => {
     throw result.errors;
   }
 
-  const recipes = result.data.allSanityRecipe.nodes;
+  const recipes = result.data.recipes.nodes;
 
   recipes.forEach((recipe) => {
     createPage({

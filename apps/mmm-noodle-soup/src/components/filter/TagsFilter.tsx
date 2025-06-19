@@ -14,7 +14,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
- * Work in progress: 
+ * Work in progress: There is a possibility to use gatsby-node.js to create pages with matching recipes for each tag statically and pass the resulting recipes to the pages/recipes/index.tsx page. The filtered tag will be passed in the context. This only supports one tag at a time, which may be enough.
  * @param param0
  * @returns 
  */
