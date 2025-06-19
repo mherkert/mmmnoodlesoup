@@ -3,9 +3,5 @@
   publish = "apps/mmm-noodle-soup/public"
   command = "gatsby clean && gatsby build"
 
-[[plugins]]
-  package = "netlify-plugin-gatsby"
-
-
 [build.environment]
   NODE_VERSION = "22.14.0"
