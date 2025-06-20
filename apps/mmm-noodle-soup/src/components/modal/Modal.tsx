@@ -25,6 +25,7 @@ export const Modal = () => {
 
   return (
     <>
+    {/* TODO: button flashes big when first loading */}
       <Button onClick={open} variant="outline" inverse={true} size="md">
         <FontAwesomeIcon icon={faPlus} className="mr-2" />
         Add Recipe

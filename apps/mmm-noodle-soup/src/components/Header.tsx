@@ -25,7 +25,7 @@ const Header = () => {
         <Search />
 
         {/* Actions - right side */}
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           {isLoggedIn ? (
             <Modal ></Modal>
             // <Button
@@ -42,7 +42,7 @@ const Header = () => {
               Sign In
             </Button>
           )}
-        </div>
+        </div> */}
       </nav>
     </header>
   );
