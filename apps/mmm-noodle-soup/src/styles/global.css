@@ -50,6 +50,9 @@
   --editor-instructions-color-dark: hsl(270, 100%, 30%);
   --editor-instructions-title-color-light: hsl(270, 100%, 84%);
   --editor-instruction-color-light: hsl(270, 100%, 93%);
+
+  --font-heading: "Playfair Display", serif;
+  --primary: 220 14% 16%; /* #2C3E50 */
 }
 
 @layer base {

@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
-import { Instructions } from "./RecipeInstructions";
 import React from "react";
-import { createMockRecipe } from "../../__mocks__/recipes";
+import { createMockRecipe } from "../../../__mocks__/recipes";
 import { debug } from "jest-preview";
+import { Instructions } from "./RecipeInstructions";
 describe("RecipeInstructions", () => {
   it("should render", () => {
     const recipe = createMockRecipe();

@@ -6,8 +6,8 @@ import { Tags } from "../tags/Tags";
 import { Duration } from "../duration/Duration";
 import { formatDate } from "../../utils/date";
 import { ExternalLink } from "../links/ExternalLink";
-import { Instructions } from "./RecipeInstructions";
-import { Ingredients } from "./RecipeIngredients";
+import { Instructions } from "./instructions/RecipeInstructions";
+import { Ingredients } from "./ingredients/RecipeIngredients";
 import { FullscreenView } from "../FullscreenView";
 
 type RecipeProps = {

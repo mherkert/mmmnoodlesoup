@@ -1,0 +1,27 @@
+.instructionsList {
+  counter-reset: instructions-counter;
+}
+
+.instructionsList li {
+  list-style: none;
+  counter-increment: instructions-counter;
+  position: relative;
+  padding-left: 3rem; /* 48px */
+  margin-bottom: 1rem; /* 16px */
+}
+
+.instructionsList li::before {
+  content: counter(instructions-counter);
+  position: absolute;
+  left: 0;
+  top: -0.375rem; /* -6px */
+  width: 2rem; /* 32px */
+  height: 2rem; /* 32px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 1.875rem; /* 30px */
+  line-height: 2.25rem; /* 36px */
+  color: hsl(var(--primary));
+}

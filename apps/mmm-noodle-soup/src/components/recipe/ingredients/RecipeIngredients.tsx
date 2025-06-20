@@ -1,8 +1,9 @@
-import { Recipe } from "../../data/types";
+import { Recipe } from "../../../data/types";
 import React from "react";
-import { Heading } from "../heading/Heading";
-import { Button } from "../buttons/Button";
-import { useFullscreenContext } from "../../contexts/FullscreenContext";
+import { Heading } from "../../heading/Heading";
+import { Button } from "../../buttons/Button";
+import { useFullscreenContext } from "../../../contexts/FullscreenContext";
+import { useId } from "react";
 
 const QUANTITY_OPTIONS = [
   { label: "½ x", value: 0.5 },
@@ -23,16 +24,31 @@ export const Ingredients = ({
   setIngredientsMultiplier: (ingredientsMultiplier: number) => void;
 }) => {
   const { isFullscreen } = useFullscreenContext();
+  const ingredientsListId = useId();
+
   return (
     <div className={className}>
+      {recipe.servingsCount && (
+        <div aria-live="polite" className="sr-only">
+          {`Ingredients updated for ${
+            recipe.servingsCount * ingredientsMultiplier
+          } servings.`}
+        </div>
+      )}
       <Heading level={2}>
         Ingredients{" "}
-        <span className="text-sm">
-          (Serves {recipe.servingsCount * ingredientsMultiplier})
-        </span>
+        {recipe.servingsCount && (
+          <span className="text-sm">
+            (Serves {recipe.servingsCount * ingredientsMultiplier})
+          </span>
+        )}
       </Heading>
       {recipe.servingsCount && (
-        <div className={`flex gap-2 mb-4 ${isFullscreen ? "hidden" : ""}`}>
+        <div
+          role="group"
+          aria-label="Recipe quantity multiplier"
+          className={`flex gap-2 mb-4 ${isFullscreen ? "hidden" : ""}`}
+        >
           {QUANTITY_OPTIONS.map(({ value, label }) => {
             return (
               <Button
@@ -40,7 +56,10 @@ export const Ingredients = ({
                 variant="outline"
                 size="sm"
                 className="w-13 whitespace-nowrap"
+                role="radio"
                 active={ingredientsMultiplier === value}
+                aria-checked={ingredientsMultiplier === value}
+                aria-controls={ingredientsListId}
                 onClick={() => setIngredientsMultiplier(value)}
               >
                 {label}
@@ -49,7 +68,7 @@ export const Ingredients = ({
           })}
         </div>
       )}
-      <ul>
+      <ul id={ingredientsListId}>
         {recipe.groupedIngredients.map((ingredient) => (
           <li key={ingredient.title}>
             {ingredient.title && (

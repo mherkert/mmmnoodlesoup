@@ -9,17 +9,21 @@ type DurationProps = {
 };
 
 export const Duration = ({ duration, showDetails = false }: DurationProps) => {
-  const { preparation, cooking, waiting } = duration;
-  const total = (preparation || 0) + (cooking || 0) + (waiting || 0);
+  let { preparation, cooking, waiting } = duration;
+  preparation = preparation ?? 0;
+  cooking = cooking ?? 0;
+  waiting = waiting ?? 0;
+  const total = preparation + cooking + waiting;
 
   if (total === 0) return null;
 
   if (showDetails) {
     return (
       <table>
-        <tbody>
+        <caption className="sr-only">Recipe duration breakdown</caption>
+        <thead>
           <tr>
-            <th className="text-left pe-4">
+            <th scope="col" className="text-left pe-4">
               <FontAwesomeIcon
                 className="pe-1"
                 icon={faClock}
@@ -27,24 +31,33 @@ export const Duration = ({ duration, showDetails = false }: DurationProps) => {
               />{" "}
               Total
             </th>
-            <th className="text-right">{total} min</th>
+            <th scope="col" className="text-right">
+              {total} min
+            </th>
           </tr>
-
+        </thead>
+        <tbody>
           {preparation !== 0 && (
             <tr className="text-primary-light/90 text-sm">
-              <th className="text-left pe-4">Preparation</th>
+              <th scope="row" className="text-left pe-4">
+                Preparation
+              </th>
               <td className="text-right">{preparation} min</td>
             </tr>
           )}
           {waiting !== 0 && (
             <tr className="text-primary-light/90 text-sm">
-              <th className="text-left pe-4">Waiting</th>
+              <th scope="row" className="text-left pe-4">
+                Waiting
+              </th>
               <td className="text-right">{waiting} min</td>
-            </tr> 
+            </tr>
           )}
           {cooking !== 0 && (
             <tr className="text-primary-light/90 text-sm">
-              <th className="text-left pe-4">Cooking</th>
+              <th scope="row" className="text-left pe-4">
+                Cooking
+              </th>
               <td className="text-right">{cooking} min</td>
             </tr>
           )}
