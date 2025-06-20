@@ -1,7 +1,7 @@
 [build]
-  base = "apps/mmm-noodle-soup"          
+  base = "/"          
   publish = "apps/mmm-noodle-soup/public"
-  command = "gatsby clean && gatsby build"
+  command = "turbo run build --filter=mmm-noodle-soup..."
 
 [build.environment]
   NODE_VERSION = "22.14.0"
