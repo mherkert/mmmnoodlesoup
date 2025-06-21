@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@400;500;600&family=Comfortaa:wght@400;500;600;700&display=swap");
+/* Import Font Awesome CSS to avoid flash of unstyled content */
+@import "@fortawesome/fontawesome-svg-core/styles.css";
 
 @tailwind base;
 @tailwind components;
