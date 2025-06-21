@@ -43,7 +43,7 @@ export const Button = ({
     primary: "bg-inverse text-primary hover:bg-inverse-light",
     secondary: "bg-secondary-sage text-primary hover:bg-secondary-sage/90",
     outline:
-      "border-2 border-white text-white hover:bg-primary hover:text-white hover:border-primary focus:outline-white focus:outline-2 focus:outline-offset-2 outline-none",
+      "border-2 border-white text-white hover:bg-primary hover:text-white  focus:outline-white focus:outline-2 focus:outline-offset-2 outline-none hover:bg-primary-light",
     ghost: "bg-transparent text-white focus:outline-white focus:outline-1",
   };
 

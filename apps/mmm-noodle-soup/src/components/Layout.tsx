@@ -5,6 +5,7 @@ import {
   FullscreenProvider,
   useFullscreenContext,
 } from "../contexts/FullscreenContext";
+import { FloatingActionBar } from "./action-bar/FloatingActionBar";
 
 // Filter out Gatsby-specific props and any props with special characters
 const filterGatsbyProps = (props: any) => {
@@ -51,6 +52,7 @@ const Layout = ({
         <FullscreenAware>
           <Header />
         </FullscreenAware>
+        <FloatingActionBar />
         <Content>{children}</Content>
         <FullscreenAware>
           <Footer />

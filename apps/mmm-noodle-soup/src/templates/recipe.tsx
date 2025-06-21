@@ -2,6 +2,8 @@ import React from "react";
 import { Recipe } from "../components/recipe/Recipe";
 import { graphql, PageProps } from "gatsby";
 import { Recipe as RecipeType } from "../data/types";
+import { useEffect } from "react";
+import { usePageStore } from "../store/PageStore";
 
 type DataProps = {
   recipe: RecipeType;
@@ -12,8 +14,18 @@ type PageContext = {
 };
 
 const RecipePage = ({
-  data: { recipe }
+  data: { recipe },
 }: PageProps<DataProps, PageContext>) => {
+  const { setCurrentPage } = usePageStore();
+
+  useEffect(() => {
+    setCurrentPage("recipe");
+
+    return () => {
+      setCurrentPage(null);
+    };
+  }, []);
+
   return <Recipe recipe={recipe} />;
 };
 
