@@ -15,8 +15,11 @@ export const sanityClientWithAuth = createClient({
   projectId: "04qgrpgb",
   dataset: "production",
   apiVersion: "2024-01-01",
-  // token: process.env.GATSBY_SANITY_TOKEN, // todo this needs to go to netlify functions
+  ...(process.env.NODE_ENV === "development" && {
+    token: process.env.SANITY_TOKEN,
+  }),
   useCdn: false,
+  // TODO: for local development add the gatsby token
 });
 
 // Generate a slug from a title
