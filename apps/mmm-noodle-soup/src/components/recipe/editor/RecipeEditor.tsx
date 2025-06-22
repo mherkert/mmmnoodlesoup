@@ -206,7 +206,6 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
 
   const handleSubmit = async () => {
     console.log("handleSubmit", { value });
-    console.log('🎯 Form submission started at:', performance.now());
 
     // TODO: check if user is logged in
     // TODO: check if recipe is valid
@@ -258,30 +257,31 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
         source: "From my own random collection of recipes",
         servingsCount: editableRecipe!.servingsCount,
         duration: editableRecipe!.duration,
-        // imageCredit: 
+        // imageCredit:
         user: {
-          // _type: "reference",
-          // _ref: sanityUser._id,
-          id: sanityUser._id,
-          name: sanityUser.name,
-          email: sanityUser.email,
-        },
-        groupedIngredients: editableRecipe!.groupedIngredients?.map((group) => ({
-          // _type: "recipeGroupedIngredients",
-          title: group.title,
-          ingredients: group.ingredients?.map((ingredient) => ({
-            // _type: "recipeIngredient",
-            name: ingredient.name,
-            amount: ingredient.amount,
-            unit: ingredient.unit,
-            comment: ingredient.comment || undefined,
-          })),
-        })) || [],
-        groupedInstructions: editableRecipe!.groupedInstructions?.map((group) => ({
-          // _type: "recipeGroupedInstructions",
-          title: group.title,
-          instructions: group.instructions,
-        })) || [],
+          _type: "reference",
+          _ref: sanityUser._id,
+        } as any, // TODO: need a sanity recipe type
+        groupedIngredients:
+          editableRecipe!.groupedIngredients?.map((group, index) => ({
+            _key: `ingredients-${index}-${Date.now()}`,
+            title: group.title,
+            ingredients: group.ingredients?.map(
+              (ingredient, ingredientIndex) => ({
+                _key: `ingredient-${index}-${ingredientIndex}-${Date.now()}`,
+                name: ingredient.name,
+                amount: ingredient.amount,
+                unit: ingredient.unit,
+                comment: ingredient.comment || undefined,
+              })
+            ),
+          })) || [],
+        groupedInstructions:
+          editableRecipe!.groupedInstructions?.map((group, index) => ({
+            _key: `instructions-${index}-${Date.now()}`,
+            title: group.title,
+            instructions: group.instructions,
+          })) || [],
         // groupedIngredients: editableRecipe!.groupedIngredients!.map((group) => ({
         // groupedIngredients: [
         //   {

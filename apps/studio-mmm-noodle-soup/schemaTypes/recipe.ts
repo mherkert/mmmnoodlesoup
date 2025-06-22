@@ -43,7 +43,7 @@ export const recipeType = defineType({
       type: 'image',
       options: {
         hotspot: true,
-      }
+      },
     }),
     defineField({
       name: 'imageCredit',
