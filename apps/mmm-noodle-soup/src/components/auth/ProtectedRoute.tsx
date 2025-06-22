@@ -1,6 +1,6 @@
 import React from "react";
 import { navigate } from "gatsby";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../store/authStore";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   fallbackPath = "/",
 }) => {
-  const { isAuthenticated, isLoading, error } = useAuth0();
+  const { isAuthenticated, isLoading } = useAuth();
 
   React.useEffect(() => {
     if (!isLoading && !isAuthenticated) {

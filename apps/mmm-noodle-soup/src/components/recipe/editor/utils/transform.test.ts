@@ -2,12 +2,13 @@ import { createMockRecipe } from "../../../../__mocks__/recipes";
 import { recipeToSlate, slateToRecipe } from "./transform";
 import { Descendant, Element } from "slate";
 import { CustomText } from "../slate";
-import { EditableRecipe, NewRecipe } from "../../../../data/types";
+import { EditableRecipe, GroupedIngredients, GroupedInstructions, Ingredient } from "../../../../data/types";
+import { Duration } from "../../../../data/types";
 
 // Helper function to check if two arrays of ingredients are equal
 function areIngredientsEqual(
-  ingredients1: any[],
-  ingredients2: any[]
+  ingredients1: Ingredient[],
+  ingredients2: Ingredient[]
 ): boolean {
   if (ingredients1.length !== ingredients2.length) return false;
 
@@ -32,7 +33,7 @@ function areInstructionsEqual(
 }
 
 // Helper function to check if two grouped ingredients are equal
-function areGroupedIngredientsEqual(groups1: any[], groups2: any[]): boolean {
+function areGroupedIngredientsEqual(groups1: GroupedIngredients[], groups2: GroupedIngredients[]): boolean {
   if (groups1.length !== groups2.length) return false;
 
   return groups1.every((group1, index) => {
@@ -45,7 +46,7 @@ function areGroupedIngredientsEqual(groups1: any[], groups2: any[]): boolean {
 }
 
 // Helper function to check if two grouped instructions are equal
-function areGroupedInstructionsEqual(groups1: any[], groups2: any[]): boolean {
+function areGroupedInstructionsEqual(groups1: GroupedInstructions[], groups2: GroupedInstructions[]): boolean {
   if (groups1.length !== groups2.length) return false;
 
   return groups1.every((group1, index) => {
@@ -58,7 +59,8 @@ function areGroupedInstructionsEqual(groups1: any[], groups2: any[]): boolean {
 }
 
 // Helper function to check if two durations are equal
-function areDurationsEqual(duration1: any, duration2: any): boolean {
+function areDurationsEqual(duration1: Duration | undefined, duration2: Duration | undefined): boolean {
+  if (!duration1 || !duration2) return false;
   return (
     duration1.preparation === duration2.preparation &&
     duration1.cooking === duration2.cooking &&
@@ -214,9 +216,6 @@ describe("transform utility", () => {
         ),
       });
 
-      // Log full objects for reference
-      console.log("\n=== Full Objects ===");
-
       // Manual equality checks
       expect(expectedRecipe.title).toBe(recipeFromSlateNew.title);
       expect(expectedRecipe.description).toBe(recipeFromSlateNew.description);
@@ -238,6 +237,142 @@ describe("transform utility", () => {
           recipeFromSlateNew.groupedInstructions || []
         )
       ).toBe(true);
+    });
+
+    it("should transform a recipe with ingredients", () => {
+      const slateValue: Descendant[] = [
+        {
+          type: "ingredients",
+          children: [
+            {
+              type: "paragraph",
+              children: [
+                {
+                  text: "200",
+                  type: "ingredientsAmount",
+                },
+                {
+                  text: " ",
+                },
+                {
+                  text: "ml",
+                  type: "ingredientsUnit",
+                },
+                {
+                  text: " ",
+                },
+                {
+                  text: "Wasser",
+                  type: "ingredientsName",
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              children: [
+                {
+                  text: "300",
+                  type: "ingredientsAmount",
+                },
+                {
+                  text: " ",
+                },
+                {
+                  text: "g",
+                  type: "ingredientsUnit",
+                },
+                {
+                  text: " ",
+                },
+                {
+                  text: "Mehl",
+                  type: "ingredientsName",
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const recipeFromSlate = slateToRecipe(slateValue);
+      expect(recipeFromSlate.groupedIngredients).toBeDefined();
+      expect(recipeFromSlate.groupedIngredients?.length).toBe(1);
+      expect(recipeFromSlate.groupedIngredients?.[0].title).toBeUndefined();
+      expect(recipeFromSlate.groupedIngredients?.[0].ingredients.length).toBe(
+        2
+      );
+      expect(
+        recipeFromSlate.groupedIngredients?.[0].ingredients[0].amount
+      ).toBe(200);
+      expect(recipeFromSlate.groupedIngredients?.[0].ingredients[0].unit).toBe(
+        "ml"
+      );
+      expect(recipeFromSlate.groupedIngredients?.[0].ingredients[0].name).toBe(
+        "Wasser"
+      );
+      expect(
+        recipeFromSlate.groupedIngredients?.[0].ingredients[1].amount
+      ).toBe(300);
+      expect(recipeFromSlate.groupedIngredients?.[0].ingredients[1].unit).toBe(
+        "g"
+      );
+      expect(recipeFromSlate.groupedIngredients?.[0].ingredients[1].name).toBe(
+        "Mehl"
+      );
+    });
+
+    it("should transform a recipe with a single ingredient", () => {
+      // Sometimes we have a single ingredient and no title and for some reason slate represents it as shown below. There may be a fix for this, but for now let's handle this case.
+      const slateValue: Descendant[] = [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "ingredients",
+              "children": [
+                {
+                  "text": "300",
+                  // @ts-expect-error
+                  "type": "ingredientsAmount"
+                },
+                {
+                  // @ts-expect-error
+                  "text": " "
+                },
+                {
+                  "text": "ml",
+                  // @ts-expect-error
+                  "type": "ingredientsUnit"
+                },
+                {
+                  // @ts-expect-error
+                  "text": " "
+                },
+                {
+                  "text": "Wasser",
+                  // @ts-expect-error
+                  "type": "ingredientsName"
+                }
+              ]
+            }
+          ]
+        }
+      ];
+      const recipeFromSlate = slateToRecipe(slateValue);
+      expect(recipeFromSlate.groupedIngredients).toBeDefined();
+      expect(recipeFromSlate.groupedIngredients?.length).toBe(1);
+      expect(recipeFromSlate.groupedIngredients?.[0].title).toBeUndefined();
+      expect(recipeFromSlate.groupedIngredients?.[0].ingredients.length).toBe(
+        1
+      );
+      expect(
+        recipeFromSlate.groupedIngredients?.[0].ingredients[0].amount
+      ).toBe(300);
+      expect(recipeFromSlate.groupedIngredients?.[0].ingredients[0].unit).toBe(
+        "ml"
+      );
+      expect(recipeFromSlate.groupedIngredients?.[0].ingredients[0].name).toBe(
+        "Wasser"
+      );
     });
   });
 });

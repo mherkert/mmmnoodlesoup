@@ -34,6 +34,7 @@ import {
 } from "./constants";
 import { Recipe } from "../Recipe";
 import { generateUniqueSlug } from "../../../services/sanity";
+import { Stepper } from "./Stepper";
 
 type RecipeEditorProps = {
   recipe?: RecipeType;
@@ -194,6 +195,7 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
 
   const handleSubmit = () => {
     console.log("handleSubmit", { value });
+   
   };
 
   const handlePreview = () => {
@@ -202,7 +204,7 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
     try {
       // TODO handle recipe and preview progression
       const editableRecipe = slateToRecipe(value);
-      editableRecipe._createdAt = new Date().toISOString();
+      // editableRecipe._createdAt = new Date().toISOString();
       // editableRecipe.slug = await generateUniqueSlug(editableRecipe.title);
       console.log("recipe preview", { editableRecipe });
       setEditableRecipe(editableRecipe);
@@ -217,72 +219,41 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
     }
   };
 
-  // return (
-  //   <ol className="items-center w-full space-y-4 sm:flex sm:space-x-8 sm:space-y-0 rtl:space-x-reverse">
-  //       <li className="flex items-center text-blue-600 dark:text-blue-500 space-x-2.5 rtl:space-x-reverse">
-  //           <span className="flex items-center justify-center w-8 h-8 border border-blue-600 rounded-full shrink-0 dark:border-blue-500">
-  //               1
-  //           </span>
-  //           <span>
-  //               <h3 className="font-medium leading-tight">User info</h3>
-  //               <p className="text-sm">Step details here</p>
-  //           </span>
-  //       </li>
-  //       <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5 rtl:space-x-reverse">
-  //           <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
-  //               2
-  //           </span>
-  //           <span>
-  //               <h3 className="font-medium leading-tight">Company info</h3>
-  //               <p className="text-sm">Step details here</p>
-  //           </span>
-  //       </li>
-  //       <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5 rtl:space-x-reverse">
-  //           <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
-  //               3
-  //           </span>
-  //           <span>
-  //               <h3 className="font-medium leading-tight">Payment info</h3>
-  //               <p className="text-sm">Step details here</p>
-  //           </span>
-  //       </li>
-  //   </ol>
-
-  // );
-
-  if (step === "preview") {
-    return <Recipe recipe={editableRecipe!} />;
-  } else {
-    return (
-      <Slate
-        editor={editor}
-        initialValue={initialValue}
-        onChange={(value: Descendant[]) => {
-          setValue(value);
-          // console.log("Slate value:", value);
-          // console.log(JSON.stringify(value, null, 2));
-        }}
-      >
-        <Toolbar
-          onEdit={handleEdit}
-          onPreview={handlePreview}
-          onSubmit={handleSubmit}
-        />
-        <Editable
-          ref={editableRef}
-          className="bg-white rounded-md border border-gray-200 outline-none p-2"
-          renderElement={renderElement}
-          placeholder="Enter some recipe text…"
-          renderPlaceholder={({ children, attributes }) => {
-            delete attributes.style.top;
-            return <span {...attributes}>{children}</span>;
+  return (
+    <>
+      <Stepper
+        onEdit={handleEdit}
+        onPreview={handlePreview}
+        onSubmit={handleSubmit}
+      />
+      {step === "edit" && (
+        <Slate
+          editor={editor}
+          initialValue={value}
+          onChange={(value: Descendant[]) => {
+            setValue(value);
+            // console.log("Slate value:", value);
+            // console.log(JSON.stringify(value, null, 2));
           }}
-          // need to set min height here to override slate's inline min height
-          style={{ minHeight: "500px" }}
-          renderLeaf={renderLeaf}
-          onKeyDown={handleKeyDown}
-        />
-      </Slate>
-    );
-  }
+        >
+          <Toolbar />
+          <Editable
+            ref={editableRef}
+            className="bg-white rounded-md border border-gray-200 outline-none p-2"
+            renderElement={renderElement}
+            placeholder="Enter some recipe text…"
+            renderPlaceholder={({ children, attributes }) => {
+              delete attributes.style.top;
+              return <span {...attributes}>{children}</span>;
+            }}
+            // need to set min height here to override slate's inline min height
+            style={{ minHeight: "500px" }}
+            renderLeaf={renderLeaf}
+            onKeyDown={handleKeyDown}
+          />
+        </Slate>
+      )}
+      {step === "preview" && <Recipe recipe={editableRecipe!} />}
+    </>
+  );
 };

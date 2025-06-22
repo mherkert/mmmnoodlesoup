@@ -2,24 +2,10 @@ import React from "react";
 import { useSlate } from "slate-react";
 import { Button } from "../../buttons/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEye,
-  faPencil,
-  faRedo,
-  faUndo,
-  faSave,
-} from "@fortawesome/free-solid-svg-icons";
+import { faRedo, faUndo } from "@fortawesome/free-solid-svg-icons";
 
-type ToolbarProps = {
-  onEdit: () => void;
-  onPreview: () => void;
-  onSubmit: () => void;
-};
-
-export const Toolbar = ({ onEdit, onPreview, onSubmit }: ToolbarProps) => {
+export const Toolbar = () => {
   const editor = useSlate();
-
-
 
   /** TODO: Add more buttons */
   return (
@@ -54,21 +40,6 @@ export const Toolbar = ({ onEdit, onPreview, onSubmit }: ToolbarProps) => {
           <FontAwesomeIcon icon={faRedo} />
         </Button>
       </div>
-      <div className="flex bg-white rounded-md border border-gray-200">
-        <Button variant="ghost" size="sm" onClick={onEdit}>
-          <FontAwesomeIcon icon={faPencil} />
-          Edit
-        </Button>
-        <Button variant="ghost" size="sm" onClick={onPreview}>
-          <FontAwesomeIcon icon={faEye} />
-          Preview
-        </Button>
-        <Button variant="ghost" size="sm">
-          <FontAwesomeIcon icon={faSave} />
-          Save
-        </Button>
-      </div>
-      {/* Add more buttons as needed */}
     </div>
   );
 };

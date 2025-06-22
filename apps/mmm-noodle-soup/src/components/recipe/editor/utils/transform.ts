@@ -4,6 +4,7 @@ import {
   GroupedInstructions,
   Recipe,
   EditableRecipe,
+  Ingredient,
 } from "../../../../data/types";
 import {
   TitleType,
@@ -32,6 +33,14 @@ import {
   InstructionsTitleElement,
   InstructionElement,
   ParagraphElement,
+  TitleElement,
+  DescriptionElement,
+  DurationWaitingText,
+  DurationPreparationText,
+  DurationCookingText,
+  ServingsCountText,
+  InstructionsElement,
+  IngredientsElement,
 } from "../slate";
 import { validateRecipe } from "./validate";
 import { safeNumber } from "./validate";
@@ -202,121 +211,239 @@ export const recipeToSlate = (recipe: Recipe): Descendant[] => {
   return slate;
 };
 
-export const slateToRecipe = (slate: Descendant[]): EditableRecipe => {
-  const recipeInTraining: EditableRecipe = {};
+// Use the visitor pattern to transform the slate to a recipe
+interface NodeVisitor {
+  visitTitle(node: TitleElement, context: RecipeBuilder): void;
+  visitDescription(node: DescriptionElement, context: RecipeBuilder): void;
+  visitDurationPreparation(
+    node: DurationPreparationText,
+    context: RecipeBuilder
+  ): void;
+  visitDurationWaiting(node: DurationWaitingText, context: RecipeBuilder): void;
+  visitDurationCooking(node: DurationCookingText, context: RecipeBuilder): void;
+  visitServingsCount(node: ServingsCountText, context: RecipeBuilder): void;
+  visitInstructions(node: InstructionsElement, context: RecipeBuilder): void;
+  visitIngredients(node: IngredientsElement, context: RecipeBuilder): void;
+  visitDefault(node: Descendant, context: RecipeBuilder): void;
+}
 
+class RecipeBuilder {
+  private recipe: EditableRecipe = {};
+
+  setTitle(title: string): void {
+    this.recipe.title = title;
+  }
+
+  setDescription(description: string): void {
+    this.recipe.description = description;
+  }
+
+  setDurationPreparation(minutes: number): void {
+    if (!this.recipe.duration) {
+      this.recipe.duration = {};
+    }
+    this.recipe.duration.preparation = minutes;
+  }
+
+  setDurationWaiting(minutes: number): void {
+    if (!this.recipe.duration) {
+      this.recipe.duration = {};
+    }
+    this.recipe.duration.waiting = minutes;
+  }
+
+  setDurationCooking(minutes: number): void {
+    if (!this.recipe.duration) {
+      this.recipe.duration = {};
+    }
+    this.recipe.duration.cooking = minutes;
+  }
+
+  setServingsCount(count: number): void {
+    this.recipe.servingsCount = count;
+  }
+
+  addGroupedInstructions(groupedInstructions: GroupedInstructions): void {
+    if (!this.recipe.groupedInstructions) {
+      this.recipe.groupedInstructions = [];
+    }
+    this.recipe.groupedInstructions.push(groupedInstructions);
+  }
+
+  addGroupedIngredients(groupedIngredients: GroupedIngredients): void {
+    if (!this.recipe.groupedIngredients) {
+      this.recipe.groupedIngredients = [];
+    }
+    this.recipe.groupedIngredients.push(groupedIngredients);
+  }
+
+  build(): EditableRecipe {
+    return this.recipe;
+  }
+}
+
+class RecipeNodeVisitor implements NodeVisitor {
+  visitTitle(node: TitleElement, context: RecipeBuilder): void {
+    context.setTitle(node.children[0].text);
+  }
+
+  visitDescription(node: DescriptionElement, context: RecipeBuilder): void {
+    context.setDescription(node.children[0].text);
+  }
+
+  visitDurationPreparation(
+    node: DurationPreparationText,
+    context: RecipeBuilder
+  ): void {
+    const result = safeNumber(node.text);
+    if (result.kind === "success") {
+      context.setDurationPreparation(result.value);
+    } else {
+      throw new Error("Failed to convert preparation duration to number.");
+    }
+  }
+
+  visitDurationWaiting(
+    node: DurationWaitingText,
+    context: RecipeBuilder
+  ): void {
+    const result = safeNumber(node.text);
+    if (result.kind === "success") {
+      context.setDurationWaiting(result.value);
+    } else {
+      throw new Error("Failed to convert waiting duration to number.");
+    }
+  }
+
+  visitDurationCooking(
+    node: DurationCookingText,
+    context: RecipeBuilder
+  ): void {
+    const result = safeNumber(node.text);
+    if (result.kind === "success") {
+      context.setDurationCooking(result.value);
+    } else {
+      throw new Error("Failed to convert cooking duration to number.");
+    }
+  }
+
+  visitServingsCount(node: ServingsCountText, context: RecipeBuilder): void {
+    const result = safeNumber(node.text);
+    if (result.kind === "success") {
+      context.setServingsCount(result.value);
+    } else {
+      throw new Error("Failed to convert servings count to number.");
+    }
+  }
+
+  visitInstructions(node: InstructionsElement, context: RecipeBuilder): void {
+    const titleNode = node.children.find(
+      (child: Descendant) => child.type === InstructionsTitleType
+    );
+    const title = titleNode?.children[0]?.text;
+    const instructionsNode = node.children.filter(
+      (child: Descendant) => child.type === InstructionType
+    );
+    const instructions = instructionsNode.map(
+      (node: InstructionElement) => node.children[0].text
+    );
+
+    context.addGroupedInstructions({
+      title,
+      instructions,
+    });
+  }
+
+  // TOOD: contains some any types due to the two different structures of nodes for single and multiple ingredients. Investigate if it can be fixed before expressing this situation with types.
+  visitIngredients(node: IngredientsElement, context: RecipeBuilder): void {
+    const buildIngredient = (node: any): Ingredient => {
+      const amountNode = node.children.find(
+        (node: Descendant) => node.type === IngredientsAmountType
+      );
+      const result = amountNode ? safeNumber(amountNode.text) : undefined;
+      if (result && result.kind === "failure") {
+        throw new Error("Failed to convert amount to number.");
+      }
+      return {
+        amount: result ? result.value : undefined,
+        unit: node.children.find(
+          (node: Descendant) => node.type === IngredientsUnitType
+        )?.text,
+        name:
+          node.children.find((node: Descendant) => node.type === IngredientsNameType)
+            ?.text || "",
+        comment: node.children.find(
+          (node: Descendant) => node.type === IngredientsCommentType
+        )?.text,
+      };
+    };
+
+    const titleNode = node.children.find(
+      (child: Descendant) => child.type === IngredientsTitleType
+    );
+    const title = titleNode?.children[0]?.text;
+
+    const ingredientNodes = node.children.filter(
+      (child: Descendant) =>
+        child.type === "paragraph" &&
+        child.children.some((child: Descendant) => child.hasOwnProperty("type"))
+    );
+
+    let ingredients: Ingredient[];
+    // Sometimes ingredients node contains one single ingredient as its children
+    if (ingredientNodes.length === 0) {
+      ingredients = [buildIngredient(node)];
+    } else {
+      ingredients = ingredientNodes.map((node: any) => buildIngredient(node));
+    }
+
+    context.addGroupedIngredients({
+      title,
+      ingredients,
+    });
+  }
+
+  visitDefault(node: Descendant, context: RecipeBuilder): void {
+    // Do nothing for unrecognized node types
+  }
+}
+
+export const slateToRecipe = (slate: Descendant[]): EditableRecipe => {
+  const visitor = new RecipeNodeVisitor();
+  const context = new RecipeBuilder();
   const queue: Descendant[] = [...slate];
 
   while (queue.length > 0) {
     const currentNode = queue.shift()!;
 
+    // Dispatch to appropriate visitor method
     switch (currentNode.type) {
       case TitleType:
-        recipeInTraining.title = currentNode.children[0].text;
+        visitor.visitTitle(currentNode, context);
         break;
       case DescriptionType:
-        recipeInTraining.description = currentNode.children[0].text;
+        visitor.visitDescription(currentNode, context);
         break;
-      case DurationPreparationType: {
-        if (!recipeInTraining.duration) {
-          recipeInTraining.duration = {};
-        }
-        const result = safeNumber(currentNode.text);
-        if (result.kind === "success") {
-          recipeInTraining.duration.preparation = result.value;
-        } else
-          throw new Error("Failed to convert preparation duration to number.");
+      case DurationPreparationType:
+        visitor.visitDurationPreparation(currentNode, context);
         break;
-      }
-      case DurationWaitingType: {
-        if (!recipeInTraining.duration) {
-          recipeInTraining.duration = {};
-        }
-        const result = safeNumber(currentNode.text);
-        if (result.kind === "success") {
-          recipeInTraining.duration.waiting = result.value;
-        } else throw new Error("Failed to convert waiting duration to number.");
+      case DurationWaitingType:
+        visitor.visitDurationWaiting(currentNode, context);
         break;
-      }
-      case DurationCookingType: {
-        if (!recipeInTraining.duration) {
-          recipeInTraining.duration = {};
-        }
-        const result = safeNumber(currentNode.text);
-        if (result.kind === "success") {
-          recipeInTraining.duration.cooking = result.value;
-        } else throw new Error("Failed to convert cooking duration to number.");
+      case DurationCookingType:
+        visitor.visitDurationCooking(currentNode, context);
         break;
-      }
-      case ServingsCountType: {
-        const result = safeNumber(currentNode.text);
-        if (result.kind === "success") {
-          recipeInTraining.servingsCount = result.value;
-        } else throw new Error("Failed to convert servings count to number.");
+      case ServingsCountType:
+        visitor.visitServingsCount(currentNode, context);
         break;
-      }
-      case InstructionsType: {
-        if (!recipeInTraining.groupedInstructions) {
-          recipeInTraining.groupedInstructions = [];
-        }
-        const titleNode = currentNode.children.find(
-          (child) => child.type === InstructionsTitleType
-        );
-        const title = titleNode?.children[0]?.text;
-        const instructionsNode = currentNode.children.filter(
-          (child) => child.type === InstructionType
-        );
-        const instructions = instructionsNode.map(
-          (node) => node.children[0].text
-        );
-        const groupedInstructions: GroupedInstructions = {
-          title,
-          instructions: instructions,
-        };
-        recipeInTraining.groupedInstructions.push(groupedInstructions);
+      case InstructionsType:
+        visitor.visitInstructions(currentNode, context);
         break;
-      }
-      case IngredientsType: {
-        if (!recipeInTraining.groupedIngredients) {
-          recipeInTraining.groupedIngredients = [];
-        }
-        const titleNode = currentNode.children.find(
-          (child) => child.type === IngredientsTitleType
-        );
-        const title = titleNode?.children[0]?.text;
-
-        const ingredientNodes = currentNode.children.filter(
-          (child) => child.type === "paragraph"
-        );
-        const ingredients = ingredientNodes.map((node) => {
-          const amountNode = node.children.find(
-            (node) => node.type === IngredientsAmountType
-          );
-          const result = amountNode ? safeNumber(amountNode.text) : undefined;
-          if (result && result.kind === "failure") {
-            throw new Error("Failed to convert amount to number.");
-          }
-          return {
-            amount: result ? result.value : undefined,
-            unit: node.children.find(
-              (node) => node.type === IngredientsUnitType
-            )?.text,
-            name:
-              node.children.find((node) => node.type === IngredientsNameType)
-                ?.text || "",
-            comment: node.children.find(
-              (node) => node.type === IngredientsCommentType
-            )?.text,
-          };
-        });
-        const groupedIngredients: GroupedIngredients = {
-          title,
-          ingredients: ingredients,
-        };
-        recipeInTraining.groupedIngredients.push(groupedIngredients);
+      case IngredientsType:
+        visitor.visitIngredients(currentNode, context);
         break;
-      }
       default:
+        visitor.visitDefault(currentNode, context);
         break;
     }
 
@@ -324,5 +451,6 @@ export const slateToRecipe = (slate: Descendant[]): EditableRecipe => {
       queue.push(...currentNode.children);
     }
   }
-  return validateRecipe(recipeInTraining);
+
+  return context.build();
 };
