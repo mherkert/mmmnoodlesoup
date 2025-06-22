@@ -15,7 +15,7 @@ import {
   RenderElementProps,
   RenderLeafProps,
 } from "slate-react";
-import { EditableRecipe } from "../../../data/types";
+import { EditableRecipe, NewRecipe } from "../../../data/types";
 import { Recipe as RecipeType } from "../../../data/types";
 import { isHotkey } from "is-hotkey";
 import { RecipeNode } from "./RecipeNode";
@@ -33,8 +33,16 @@ import {
   WRAP_TYPES,
 } from "./constants";
 import { Recipe } from "../Recipe";
-import { generateUniqueSlug } from "../../../services/sanity";
+import {
+  createRecipe,
+  createUser,
+  generateUniqueSlug,
+  getUserByEmail,
+  updateUserAuth0Ids,
+} from "../../../services/sanity";
 import { Stepper } from "./Stepper";
+import { useAuth } from "../../../store/authStore";
+import { navigate } from "gatsby";
 
 type RecipeEditorProps = {
   recipe?: RecipeType;
@@ -56,6 +64,8 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
   // console.log("mockRecipe", mockRecipe);
   // const initialValue: Descendant[] = mockRecipe;
 
+  const { isAuthenticated, user } = useAuth();
+
   const [editor] = useState(() => withReact(withHistory(createEditor())));
   const [validationError, setValidationError] = useState<string | null>(null);
   const [step, setStep] = useState<"preview" | "edit">("edit");
@@ -64,6 +74,7 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
   >(recipe);
   const editableRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState<Descendant[]>(initialValue);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (editableRef.current) {
@@ -193,9 +204,121 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
     setStep("edit");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("handleSubmit", { value });
-   
+    console.log('🎯 Form submission started at:', performance.now());
+
+    // TODO: check if user is logged in
+    // TODO: check if recipe is valid
+    // TODO: submit recipe
+    // TODO: handle submit progression
+    // TODO: handle recipe and submit progression
+    // TODO: handle recipe");
+    // TODO: handle recipe and submit progression
+
+    if (!isAuthenticated || !user) {
+      setValidationError("You must be logged in to create a recipe");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setValidationError(null);
+
+    try {
+      // First, ensure user exists in Sanity (using email as primary key)
+      let sanityUser = await getUserByEmail(user.email!);
+
+      if (!sanityUser) {
+        // Create user in Sanity if they don't exist
+        sanityUser = await createUser({
+          name: user.name,
+          email: user.email,
+          image: user.picture,
+          auth0Ids: [user.sub], // Start with current Auth0 ID
+          role: "user",
+        });
+      } else {
+        // Update user's Auth0 IDs to include the current one
+        await updateUserAuth0Ids(sanityUser._id, user.sub!);
+      }
+
+      console.log("editableRecipe", editableRecipe);
+      // Generate unique slug (this will check for conflicts)
+      // const { generateUniqueSlug } = await import("../../services/sanity");
+      const uniqueSlug = await generateUniqueSlug(editableRecipe!.title!); //TODO type this
+
+      // Prepare recipe data for Sanity, TODO: type this
+      const recipe: NewRecipe = {
+        title: editableRecipe!.title!,
+        slug: {
+          // _type: "slug",
+          current: uniqueSlug,
+        },
+        description: editableRecipe!.description,
+        source: "From my own random collection of recipes",
+        servingsCount: editableRecipe!.servingsCount,
+        duration: editableRecipe!.duration,
+        // imageCredit: 
+        user: {
+          // _type: "reference",
+          // _ref: sanityUser._id,
+          id: sanityUser._id,
+          name: sanityUser.name,
+          email: sanityUser.email,
+        },
+        groupedIngredients: editableRecipe!.groupedIngredients?.map((group) => ({
+          // _type: "recipeGroupedIngredients",
+          title: group.title,
+          ingredients: group.ingredients?.map((ingredient) => ({
+            // _type: "recipeIngredient",
+            name: ingredient.name,
+            amount: ingredient.amount,
+            unit: ingredient.unit,
+            comment: ingredient.comment || undefined,
+          })),
+        })) || [],
+        groupedInstructions: editableRecipe!.groupedInstructions?.map((group) => ({
+          // _type: "recipeGroupedInstructions",
+          title: group.title,
+          instructions: group.instructions,
+        })) || [],
+        // groupedIngredients: editableRecipe!.groupedIngredients!.map((group) => ({
+        // groupedIngredients: [
+        //   {
+        //     _type: "recipeGroupedIngredients",
+        //     title: "Ingredients",
+        //     ingredients: editableRecipe!.ingredients!.map((ing) => ({
+        //       _type: "recipeIngredient",
+        //       name: ing.name,
+        //       amount: ing.amount,
+        //       unit: ing.unit,
+        //       comment: ing.comment || undefined,
+        //     })),
+        //   },
+        // ],
+        // groupedInstructions: [
+        //   {
+        //     _type: "recipeGroupedInstructions",
+        //     title: "Instructions",
+        //     instructions: editableRecipe!.instructions!.map((inst) => ({
+        //       _type: "recipeInstruction",
+        //       text: inst.text,
+        //       order: inst.order,
+        //     })),
+        //   },
+        // ],
+      };
+
+      const result = await createRecipe(recipe);
+
+      // Redirect to the new recipe
+      navigate(`/recipes/${result.slug.current}`);
+    } catch (err) {
+      console.error("Error creating recipe:", err);
+      setValidationError("Failed to create recipe. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handlePreview = () => {
@@ -204,9 +327,9 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
     try {
       // TODO handle recipe and preview progression
       const editableRecipe = slateToRecipe(value);
-      // editableRecipe._createdAt = new Date().toISOString();
+      editableRecipe._createdAt = new Date().toISOString();
       // editableRecipe.slug = await generateUniqueSlug(editableRecipe.title);
-      console.log("recipe preview", { editableRecipe });
+      // console.log("recipe preview", { editableRecipe });
       setEditableRecipe(editableRecipe);
       setStep("preview");
       setValidationError(null);

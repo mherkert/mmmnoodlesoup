@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.27.0",
+    "@netlify/functions": "^4.1.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.2.1",

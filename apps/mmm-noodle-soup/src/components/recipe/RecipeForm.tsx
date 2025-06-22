@@ -10,6 +10,7 @@ import {
   generateUniqueSlug,
 } from "../../services/sanity";
 import { navigate } from "gatsby";
+import { NewRecipe } from "../../data/types";
 
 interface RecipeFormData {
   title: string;
@@ -131,10 +132,10 @@ export const RecipeForm = () => {
       const uniqueSlug = await generateUniqueSlug(formData.title);
 
       // Prepare recipe data for Sanity
-      const recipeData = {
+      const recipeData: NewRecipe = {
         title: formData.title,
         slug: {
-          _type: "slug",
+          // _type: "slug",
           current: uniqueSlug,
         },
         description: formData.description,
@@ -142,12 +143,15 @@ export const RecipeForm = () => {
         servingsCount: formData.servingsCount,
         imageCredit: formData.imageCredit || undefined,
         user: {
-          _type: "reference",
-          _ref: sanityUser._id,
+          // _type: "reference",
+          // _ref: sanityUser._id,
+          id: sanityUser._id,
+          name: sanityUser.name,
+          email: sanityUser.email,
         },
         groupedIngredients: [
           {
-            _type: "recipeGroupedIngredients",
+            // _type: "recipeGroupedIngredients",
             title: "Ingredients",
             ingredients: formData.ingredients.map((ing) => ({
               _type: "recipeIngredient",
@@ -160,13 +164,9 @@ export const RecipeForm = () => {
         ],
         groupedInstructions: [
           {
-            _type: "recipeGroupedInstructions",
+            // _type: "recipeGroupedInstructions",
             title: "Instructions",
-            instructions: formData.instructions.map((inst) => ({
-              _type: "recipeInstruction",
-              text: inst.text,
-              order: inst.order,
-            })),
+            instructions: formData.instructions.map((inst) => inst.text),
           },
         ],
       };

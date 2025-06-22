@@ -64,7 +64,7 @@ export type EditableRecipe = Partial<Recipe>;
 
 export type NewRecipe = Omit<
   Recipe,
-  "id" | "slug" | "_createdAt" | "_updatedAt" | "user" | "source" | "metadata"
+  "id" | "_createdAt" | "_updatedAt" | "metadata"
 >;
 
 export type RecipeSearchResult = Pick<

@@ -1,12 +1,22 @@
 import createClient from "@sanity/client";
+import { NewRecipe } from "../data/types";
 
-// Create Sanity client
+// Create Sanity client for read operations using public API
 export const sanityClient = createClient({
-  projectId: "04qgrpgb", // Your project ID from gatsby-config.ts
+  projectId: "04qgrpgb",
   dataset: "production",
-  apiVersion: "2024-01-01", // Use today's date or your preferred version
-  token: process.env.GATSBY_SANITY_TOKEN, // We'll need to add this to env vars
-  useCdn: false, // Set to false for mutations (create, update, delete)
+  apiVersion: "2024-01-01",
+  useCdn: true, // Use CDN for read operations
+  // No token needed for public read access
+});
+
+// Create Sanity client for mutations (with credentials)
+export const sanityClientWithAuth = createClient({
+  projectId: "04qgrpgb",
+  dataset: "production",
+  apiVersion: "2024-01-01",
+  // token: process.env.GATSBY_SANITY_TOKEN, // todo this needs to go to netlify functions
+  useCdn: false,
 });
 
 // Generate a slug from a title
@@ -45,10 +55,10 @@ export const generateUniqueSlug = async (title: string): Promise<string> => {
   return slug;
 };
 
-// Recipe creation function
-export const createRecipe = async (recipeData: any) => {
+// Recipe creation function - uses authenticated client
+export const createRecipe = async (recipeData: NewRecipe) => {
   try {
-    const result = await sanityClient.create({
+    const result = await sanityClientWithAuth.create({
       _type: "recipe",
       ...recipeData,
     });
@@ -59,7 +69,7 @@ export const createRecipe = async (recipeData: any) => {
   }
 };
 
-// Get user by email (more reliable than Auth0 ID)
+// Get user by email - uses read-only client
 export const getUserByEmail = async (email: string) => {
   try {
     const user = await sanityClient.fetch(
@@ -73,10 +83,10 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-// Create user if doesn't exist
+// Create user if doesn't exist - uses authenticated client
 export const createUser = async (userData: any) => {
   try {
-    const result = await sanityClient.create({
+    const result = await sanityClientWithAuth.create({
       _type: "user",
       ...userData,
     });
@@ -87,10 +97,10 @@ export const createUser = async (userData: any) => {
   }
 };
 
-// Update user's Auth0 IDs (for tracking multiple social connections)
+// Update user's Auth0 IDs - uses authenticated client
 export const updateUserAuth0Ids = async (userId: string, auth0Id: string) => {
   try {
-    const user = await sanityClient.getDocument(userId);
+    const user = await sanityClientWithAuth.getDocument(userId);
     if (!user) {
       throw new Error("User not found");
     }
@@ -98,7 +108,7 @@ export const updateUserAuth0Ids = async (userId: string, auth0Id: string) => {
     const auth0Ids = user.auth0Ids || [];
 
     if (!auth0Ids.includes(auth0Id)) {
-      await sanityClient
+      await sanityClientWithAuth
         .patch(userId)
         .set({
           auth0Ids: [...auth0Ids, auth0Id],
