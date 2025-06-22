@@ -1,4 +1,4 @@
-import { Recipe } from "../../../data/types";
+import { EditableRecipe, GroupedInstructions, Recipe } from "../../../data/types";
 import React from "react";
 import { Heading } from "../../heading/Heading";
 import classNames from "classnames";
@@ -8,14 +8,14 @@ export const Instructions = ({
   recipe,
   className,
 }: {
-  recipe: Recipe;
+  recipe: Recipe | EditableRecipe;
   className?: string;
 }) => {
   return (
     <div className={className}>
       <Heading level={2}>Instructions</Heading>
       <ul>
-        {recipe.groupedInstructions.map((instruction) => (
+        {recipe?.groupedInstructions?.map((instruction: GroupedInstructions) => (
           <li key={instruction.title}>
             {instruction.title && (
               <Heading level={3}>{instruction.title}</Heading>

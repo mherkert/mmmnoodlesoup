@@ -1,29 +1,33 @@
 import React from "react";
 import { Button } from "../buttons/Button";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../store/authStore";
 import { Link } from "gatsby";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 
 export const ActionBar = () => {
-  const { isLoading, isAuthenticated, error, user, loginWithRedirect, logout } =
-    useAuth0();
+  const { isAuthenticated, user, login, logout, isLoading } = useAuth();
 
-  /**TODO: handle loading and error */
-  /**TODO: handle layout shift when reloading page */
+  // Show loading state while auth is initializing, minimize layout shift
+  // TODO: remove Link duplication come up with a different placeholder solution
   if (isLoading) {
-    return <div>Loading...</div>;
-    // return null;
-  }
-  if (error) {
-    return <div>Oops... {error.message}</div>;
+    return (
+      <div className="flex gap-4 items-center">
+        <Link
+          className="text-white rounded-md px-4 py-2 bg-primary hover:bg-primary-dark outline-none focus:outline-2 focus:outline-offset-2 focus:outline-grey-500 border border-solid border-grey-500 hidden lg:block text-nowrap"
+          to="#"
+        >
+          <FontAwesomeIcon className="mr-2" icon={faPlus} />
+          <span className="text-nowrap">Add Recipe</span>
+        </Link>
+        <div className="animate-pulse bg-gray-300 rounded-full w-10 h-10"></div>
+      </div>
+    );
   }
 
   return (
-    <div
-      className="flex gap-4 items-center"
-    >
+    <div className="flex gap-4 items-center">
       {isAuthenticated && user ? (
         <>
           <Link
@@ -83,7 +87,7 @@ export const ActionBar = () => {
           </Menu>
         </>
       ) : (
-        <Button onClick={() => loginWithRedirect()} variant="outline" inverse>
+        <Button onClick={() => login()} variant="outline" inverse>
           Sign In
         </Button>
       )}

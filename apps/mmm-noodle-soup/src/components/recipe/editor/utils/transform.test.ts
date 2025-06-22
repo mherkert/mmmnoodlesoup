@@ -1,8 +1,8 @@
-import { createMockRecipe } from "../../../__mocks__/recipes";
+import { createMockRecipe } from "../../../../__mocks__/recipes";
 import { recipeToSlate, slateToRecipe } from "./transform";
 import { Descendant, Element } from "slate";
-import { CustomText } from "./slate";
-import { NewRecipe } from "../../../data/types";
+import { CustomText } from "../slate";
+import { EditableRecipe, NewRecipe } from "../../../../data/types";
 
 // Helper function to check if two arrays of ingredients are equal
 function areIngredientsEqual(
@@ -148,21 +148,21 @@ describe("transform utility", () => {
   describe("slate to recipe", () => {
     it("should transform a basic recipe", () => {
       const recipe = createMockRecipe();
-      const expectedRecipe: NewRecipe = {
+      const expectedRecipe: EditableRecipe = {
         title: recipe.title,
         description: recipe.description,
-        groupedIngredients: recipe.groupedIngredients,
-        groupedInstructions: recipe.groupedInstructions,
+        groupedIngredients: recipe.groupedIngredients || [],
+        groupedInstructions: recipe.groupedInstructions || [],
         duration: recipe.duration,
         servingsCount: recipe.servingsCount,
       };
       const slateValue: Descendant[] = recipeToSlate(recipe);
       const recipeFromSlate = slateToRecipe(slateValue);
-      const recipeFromSlateNew: NewRecipe = {
+      const recipeFromSlateNew: EditableRecipe = {
         title: recipeFromSlate.title,
         description: recipeFromSlate.description,
-        groupedIngredients: recipeFromSlate.groupedIngredients,
-        groupedInstructions: recipeFromSlate.groupedInstructions,
+        groupedIngredients: recipeFromSlate.groupedIngredients || [],
+        groupedInstructions: recipeFromSlate.groupedInstructions || [],
         duration: recipeFromSlate.duration,
         servingsCount: recipeFromSlate.servingsCount,
       };
@@ -198,19 +198,19 @@ describe("transform utility", () => {
         ),
       });
       console.log("GroupedIngredients comparison:", {
-        expectedLength: expectedRecipe.groupedIngredients.length,
-        actualLength: recipeFromSlateNew.groupedIngredients.length,
+        expectedLength: expectedRecipe.groupedIngredients?.length,
+        actualLength: recipeFromSlateNew.groupedIngredients?.length,
         equal: areGroupedIngredientsEqual(
-          expectedRecipe.groupedIngredients,
-          recipeFromSlateNew.groupedIngredients
+          expectedRecipe.groupedIngredients || [],
+          recipeFromSlateNew.groupedIngredients || []
         ),
       });
       console.log("GroupedInstructions comparison:", {
-        expectedLength: expectedRecipe.groupedInstructions.length,
-        actualLength: recipeFromSlateNew.groupedInstructions.length,
+        expectedLength: expectedRecipe.groupedInstructions?.length,
+        actualLength: recipeFromSlateNew.groupedInstructions?.length,
         equal: areGroupedInstructionsEqual(
-          expectedRecipe.groupedInstructions,
-          recipeFromSlateNew.groupedInstructions
+          expectedRecipe.groupedInstructions || [],
+          recipeFromSlateNew.groupedInstructions || []
         ),
       });
 
@@ -228,14 +228,14 @@ describe("transform utility", () => {
       ).toBe(true);
       expect(
         areGroupedIngredientsEqual(
-          expectedRecipe.groupedIngredients,
-          recipeFromSlateNew.groupedIngredients
+          expectedRecipe.groupedIngredients || [],
+          recipeFromSlateNew.groupedIngredients || []
         )
       ).toBe(true);
       expect(
         areGroupedInstructionsEqual(
-          expectedRecipe.groupedInstructions,
-          recipeFromSlateNew.groupedInstructions
+          expectedRecipe.groupedInstructions || [],
+          recipeFromSlateNew.groupedInstructions || []
         )
       ).toBe(true);
     });

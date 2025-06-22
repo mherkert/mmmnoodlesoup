@@ -1,4 +1,4 @@
-import { Recipe } from "../../../data/types";
+import { EditableRecipe, Recipe } from "../../../data/types";
 import React from "react";
 import { Heading } from "../../heading/Heading";
 import { Button } from "../../buttons/Button";
@@ -18,13 +18,15 @@ export const Ingredients = ({
   ingredientsMultiplier,
   setIngredientsMultiplier,
 }: {
-  recipe: Recipe;
+  recipe: Recipe | EditableRecipe;
   className?: string;
   ingredientsMultiplier: number;
   setIngredientsMultiplier: (ingredientsMultiplier: number) => void;
 }) => {
   const { isFullscreen } = useFullscreenContext();
   const ingredientsListId = useId();
+
+  console.log("recipe ingredients", recipe.groupedIngredients);
 
   return (
     <div className={className}>
@@ -69,7 +71,7 @@ export const Ingredients = ({
         </div>
       )}
       <ul id={ingredientsListId}>
-        {recipe.groupedIngredients.map((ingredient) => (
+        {recipe?.groupedIngredients?.map((ingredient) => (
           <li key={ingredient.title}>
             {ingredient.title && (
               <Heading level={3}>{ingredient.title}</Heading>

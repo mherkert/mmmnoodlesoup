@@ -1,24 +1,25 @@
-import { NewRecipe } from "../../../../data/types";
+import { EditableRecipe } from "../../../../data/types";
 
-export function validateRecipe(obj: Partial<NewRecipe>): NewRecipe {
-  if (!obj.title) {
+export function validateRecipe(newRecipe: EditableRecipe): EditableRecipe {
+  console.log("validateRecipe", { newRecipe });
+  if (!newRecipe.title) {
     throw new Error("Title is required");
   }
   if (
-    !obj.groupedIngredients ||
-    obj.groupedIngredients.length === 0 ||
-    obj.groupedIngredients.some((group) => group.ingredients.length === 0)
+    !newRecipe.groupedIngredients ||
+    newRecipe.groupedIngredients.length === 0 ||
+    newRecipe.groupedIngredients.some((group) => group.ingredients.length === 0)
   ) {
     throw new Error("Ingredients are required");
   }
   if (
-    !obj.groupedInstructions ||
-    obj.groupedInstructions.length === 0 ||
-    obj.groupedInstructions.some((group) => group.instructions.length === 0)
+    !newRecipe.groupedInstructions ||
+    newRecipe.groupedInstructions.length === 0 ||
+    newRecipe.groupedInstructions.some((group) => group.instructions.length === 0)
   ) {
     throw new Error("Instructions are required");
   }
-  return obj as NewRecipe;
+  return newRecipe;
 }
 
 export type ValidationSucceeded<R> = {

@@ -60,6 +60,8 @@ export type Recipe = {
   user: User;
 };
 
+export type EditableRecipe = Partial<Recipe>;
+
 export type NewRecipe = Omit<
   Recipe,
   "id" | "slug" | "_createdAt" | "_updatedAt" | "user" | "source" | "metadata"

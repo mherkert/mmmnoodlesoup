@@ -26,7 +26,7 @@ export const RecipeNode = memo(
       return (
         <Component
           ref={ref as any}
-          className={`inline-block border border-solid rounded-md px-1 py-[2px] w-fit mt-7 relative ps-6 pe-6
+          className={` border border-solid rounded-tr-md rounded-br-md rounded-bl-md px-1 py-[2px] w-fit mt-7 relative ps-6 pe-6
         ${colorSet.border}
         ${colorSet.background}
         `}
@@ -36,7 +36,7 @@ export const RecipeNode = memo(
           <span
             id={id}
             contentEditable={false}
-            className={`absolute top-[-1.1rem] left-2 ps-1 pe-1 rounded-tl-md rounded-tr-md ${colorSet["label-background"]} text-white text-[0.7rem] whitespace-nowrap select-none`}
+            className={`absolute top-[-1.1rem] left-[-0.1rem] ps-1 pe-1 rounded-tl-md rounded-tr-md ${colorSet["label-background"]} text-white text-[0.7rem] whitespace-nowrap select-none`}
           >
             {LABELS[type]}
           </span>

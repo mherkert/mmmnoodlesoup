@@ -3,8 +3,8 @@ import {
   GroupedIngredients,
   GroupedInstructions,
   Recipe,
-  NewRecipe,
-} from "../../../data/types";
+  EditableRecipe,
+} from "../../../../data/types";
 import {
   TitleType,
   DescriptionType,
@@ -21,7 +21,7 @@ import {
   InstructionsType,
   InstructionsTitleType,
   InstructionType,
-} from "./types";
+} from "../types";
 import {
   IngredientsCommentText,
   IngredientsAmountText,
@@ -32,9 +32,9 @@ import {
   InstructionsTitleElement,
   InstructionElement,
   ParagraphElement,
-} from "./slate";
-import { validateRecipe } from "./utils/validate";
-import { safeNumber } from "./utils/validate";
+} from "../slate";
+import { validateRecipe } from "./validate";
+import { safeNumber } from "./validate";
 
 export const recipeToSlate = (recipe: Recipe): Descendant[] => {
   const slate: Descendant[] = [];
@@ -202,10 +202,8 @@ export const recipeToSlate = (recipe: Recipe): Descendant[] => {
   return slate;
 };
 
-type RecipeInTraining = Partial<NewRecipe>;
-
-export const slateToRecipe = (slate: Descendant[]): NewRecipe => {
-  const recipeInTraining: RecipeInTraining = {};
+export const slateToRecipe = (slate: Descendant[]): EditableRecipe => {
+  const recipeInTraining: EditableRecipe = {};
 
   const queue: Descendant[] = [...slate];
 

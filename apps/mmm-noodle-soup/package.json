@@ -32,15 +32,13 @@
     "gatsby-plugin-sharp": "^5.14.0",
     "gatsby-source-filesystem": "^5.14.0",
     "gatsby-source-sanity": "^7.9.1",
-    "install": "^0.13.0",
     "into-stream": "^3.1.0",
     "is-hotkey": "^0.2.0",
     "lodash": "^4.17.21",
-    "npm": "^11.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "slate-history": "^0.113.1",
-    "slate-react": "^0.117.1",
+    "slate-react": "0.114.2",
     "zustand": "^5.0.5"
   },
   "devDependencies": {

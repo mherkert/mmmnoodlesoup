@@ -6,28 +6,23 @@ import {
   faExpand,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "gatsby";
 import { useFullscreen } from "../../hooks/useFullscreen";
 import { usePageStore } from "../../store/PageStore";
+import { useAuth } from "../../store/authStore";
 
 export const FloatingActionBar = () => {
   const { isFullscreen, toggleFullscreen } = useFullscreen({
     preventScreenOff: true,
   });
-  const { isLoading, isAuthenticated, error, user, loginWithRedirect, logout } =
-    useAuth0();
+  const { isLoading, isAuthenticated } = useAuth();
   const { currentPage } = usePageStore();
 
-  /**TODO: handle loading and error */
+  // While loading, simply return nothing
   if (isLoading) {
-    return <div>Loading...</div>;
-    // return null;
+    return null;
   }
-  if (error) {
-    return <div>Oops... {error.message}</div>;
-  }
-
+  
   return (
     <div className="lg:hidden fixed bottom-7 right-4 z-50 opacity-90 hover:opacity-100 transition-opacity duration-300">
       <div className="flex flex-col-reverse gap-2">

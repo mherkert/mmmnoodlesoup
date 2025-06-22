@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Card } from "../card/Card";
-import { Recipe as RecipeType } from "../../data/types";
+import {
+  EditableRecipe as EditableRecipeType,
+  Recipe as RecipeType,
+} from "../../data/types";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import { Tags } from "../tags/Tags";
 import { Duration } from "../duration/Duration";
@@ -11,7 +14,7 @@ import { Ingredients } from "./ingredients/RecipeIngredients";
 import { FullscreenView } from "../FullscreenView";
 
 type RecipeProps = {
-  recipe: RecipeType;
+  recipe: RecipeType | EditableRecipeType;
 };
 
 export const Recipe = ({
@@ -47,7 +50,7 @@ const RecipeFull = ({
   setIngredientsMultiplier,
   ...props
 }: {
-  recipe: RecipeType;
+  recipe: RecipeType | EditableRecipeType;
   ingredientsMultiplier: number;
   setIngredientsMultiplier: (ingredientsMultiplier: number) => void;
 } & React.HTMLAttributes<HTMLDivElement>) => {
@@ -94,9 +97,9 @@ const RecipeFull = ({
       <Card.Footer>
         <div className="text-sm text-gray-500 text-end">
           <span>
-            Added by {recipe.user.name}{" "}
+            Added by {recipe.user?.name}{" "}
             <span className="hidden md:inline whitespace-nowrap">
-              on {formatDate(recipe._createdAt)}
+              on {formatDate(recipe._createdAt!)}
             </span>
           </span>{" "}
           {recipe.source && <Source source={recipe.source} />}
@@ -111,7 +114,7 @@ const RecipeMinimal = ({
   ingredientsMultiplier,
   setIngredientsMultiplier,
 }: {
-  recipe: RecipeType;
+  recipe: RecipeType | EditableRecipeType;
   ingredientsMultiplier: number;
   setIngredientsMultiplier: (ingredientsMultiplier: number) => void;
 }) => {

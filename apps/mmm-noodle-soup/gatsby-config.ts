@@ -37,7 +37,7 @@ const config: GatsbyConfig = {
         dataset: "production",
         watchMode: true, // only dev mode
         apiVersion: "2021-03-25",
-        token: process.env.SANITY_TOKEN,
+        token: process.env.GATSBY_SANITY_TOKEN,
       },
     },
   ],
