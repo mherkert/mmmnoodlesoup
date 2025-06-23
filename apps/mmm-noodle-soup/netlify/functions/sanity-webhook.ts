@@ -36,6 +36,7 @@ export const handler: Handler = async (
     const sanitySignature = event.headers[SIGNATURE_HEADER_NAME];
     const secret = process.env.SANITY_WEBHOOK_SECRET;
     const body = event.body;
+    console.log("body", body);
 
     if (!secret) {
       return {
@@ -58,21 +59,29 @@ export const handler: Handler = async (
       };
     }
 
-    // Create the HMAC signature to compare against
-    const hmac = createHmac("sha256", secret).update(body).digest("hex");
-    const receivedSignature = Buffer.from(sanitySignature, "utf8");
-    const expectedSignature = Buffer.from(hmac, "utf8");
-
-    // Use timingSafeEqual to prevent timing attacks
-    if (!timingSafeEqual(receivedSignature, expectedSignature)) {
+    if (!isValidSignature(body, secret, sanitySignature)) {
       return {
         statusCode: 401,
         body: JSON.stringify({ error: "Invalid signature." }),
       };
     }
 
+    // // Create the HMAC signature to compare against
+    // const hmac = createHmac("sha256", secret).update(body).digest("hex");
+    // const receivedSignature = Buffer.from(sanitySignature, "utf8");
+    // const expectedSignature = Buffer.from(hmac, "utf8");
+
+    // // Use timingSafeEqual to prevent timing attacks
+    // if (!timingSafeEqual(receivedSignature, expectedSignature)) {
+    //   return {
+    //     statusCode: 401,
+    //     body: JSON.stringify({ error: "Invalid signature." }),
+    //   };
+    // }
+
     // Parse the webhook payload
     const payload: SanityWebhookPayload = JSON.parse(event.body || "{}");
+    console.log("payload", payload);
 
     // Check if this is a recipe-related change
     if (payload._type === "recipe" || payload._type === "user") {
