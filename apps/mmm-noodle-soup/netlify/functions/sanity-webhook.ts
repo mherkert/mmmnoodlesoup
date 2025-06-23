@@ -1,4 +1,5 @@
 import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import { createHmac, timingSafeEqual } from "crypto";
 
 interface SanityWebhookPayload {
   _type: string;
@@ -31,12 +32,41 @@ export const handler: Handler = async (
   }
 
   try {
-    // Verify the webhook is from Sanity (optional but recommended)
     const sanitySignature = event.headers["sanity-signature"];
+    const secret = process.env.SANITY_WEBHOOK_SECRET;
+    const body = event.body;
+
+    if (!secret) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ error: "Webhook secret is not configured." }),
+      };
+    }
+
+    if (!body) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Request has no body." }),
+      };
+    }
+
     if (!sanitySignature) {
       return {
         statusCode: 401,
-        body: JSON.stringify({ error: "Missing Sanity signature" }),
+        body: JSON.stringify({ error: "Missing Sanity signature header." }),
+      };
+    }
+
+    // Create the HMAC signature to compare against
+    const hmac = createHmac("sha256", secret).update(body).digest("hex");
+    const receivedSignature = Buffer.from(sanitySignature, "utf8");
+    const expectedSignature = Buffer.from(hmac, "utf8");
+
+    // Use timingSafeEqual to prevent timing attacks
+    if (!timingSafeEqual(receivedSignature, expectedSignature)) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ error: "Invalid signature." }),
       };
     }
 
