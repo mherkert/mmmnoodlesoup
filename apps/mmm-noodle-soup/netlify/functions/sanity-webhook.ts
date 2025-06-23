@@ -1,5 +1,6 @@
 import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 import { createHmac, timingSafeEqual } from "crypto";
+import { isValidSignature , SIGNATURE_HEADER_NAME} from "@sanity/webhook";
 
 interface SanityWebhookPayload {
   _type: string;
@@ -32,7 +33,7 @@ export const handler: Handler = async (
   }
 
   try {
-    const sanitySignature = event.headers["sanity-signature"];
+    const sanitySignature = event.headers[SIGNATURE_HEADER_NAME];
     const secret = process.env.SANITY_WEBHOOK_SECRET;
     const body = event.body;
 
