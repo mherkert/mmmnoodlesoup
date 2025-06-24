@@ -10,6 +10,15 @@ export const sanityClient = createClient({
   // No token needed for public read access
 });
 
+// Create Sanity client for development (bypasses CDN for fresh data)
+export const sanityClientDev = createClient({
+  projectId: "04qgrpgb",
+  dataset: "production",
+  apiVersion: "2024-01-01",
+  useCdn: false, // No CDN for development
+  // No token needed for public read access
+});
+
 // Create Sanity client for mutations (with credentials)
 export const sanityClientWithAuth = createClient({
   projectId: "04qgrpgb",

@@ -1,6 +1,5 @@
 import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-import { createHmac, timingSafeEqual } from "crypto";
-import { isValidSignature , SIGNATURE_HEADER_NAME} from "@sanity/webhook";
+import { isValidSignature, SIGNATURE_HEADER_NAME } from "@sanity/webhook";
 
 interface SanityWebhookPayload {
   _type: string;
@@ -36,7 +35,6 @@ export const handler: Handler = async (
     const sanitySignature = event.headers[SIGNATURE_HEADER_NAME];
     const secret = process.env.SANITY_WEBHOOK_SECRET;
     const body = event.body;
-    console.log("body", body);
 
     if (!secret) {
       return {
@@ -66,24 +64,10 @@ export const handler: Handler = async (
       };
     }
 
-    // // Create the HMAC signature to compare against
-    // const hmac = createHmac("sha256", secret).update(body).digest("hex");
-    // const receivedSignature = Buffer.from(sanitySignature, "utf8");
-    // const expectedSignature = Buffer.from(hmac, "utf8");
-
-    // // Use timingSafeEqual to prevent timing attacks
-    // if (!timingSafeEqual(receivedSignature, expectedSignature)) {
-    //   return {
-    //     statusCode: 401,
-    //     body: JSON.stringify({ error: "Invalid signature." }),
-    //   };
-    // }
-
     // Parse the webhook payload
     const payload: SanityWebhookPayload = JSON.parse(event.body || "{}");
-    console.log("payload", payload);
 
-    // Check if this is a recipe-related change
+    // Check if this is a recipe or user related change
     if (payload._type === "recipe" || payload._type === "user") {
       console.log("Recipe or user change detected, triggering rebuild...");
 
@@ -106,6 +90,9 @@ export const handler: Handler = async (
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            message: `Content update: ${payload._type} ${payload._id} - Triggered by Sanity webhook`,
+          }),
         }
       );
 
@@ -117,7 +104,6 @@ export const handler: Handler = async (
       }
 
       const result: NetlifyBuildResponse = await response.json();
-      console.log("Rebuild triggered successfully:", result);
 
       return {
         statusCode: 200,

@@ -206,7 +206,7 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
 
   const handleSubmit = async () => {
     console.log("handleSubmit", { value });
-
+    // navigate(`/recipes/my-new-recipe`);
     // TODO: check if user is logged in
     // TODO: check if recipe is valid
     // TODO: submit recipe
@@ -243,7 +243,6 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
 
       console.log("editableRecipe", editableRecipe);
       // Generate unique slug (this will check for conflicts)
-      // const { generateUniqueSlug } = await import("../../services/sanity");
       const uniqueSlug = await generateUniqueSlug(editableRecipe!.title!); //TODO type this
 
       // Prepare recipe data for Sanity, TODO: type this
@@ -282,31 +281,6 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
             title: group.title,
             instructions: group.instructions,
           })) || [],
-        // groupedIngredients: editableRecipe!.groupedIngredients!.map((group) => ({
-        // groupedIngredients: [
-        //   {
-        //     _type: "recipeGroupedIngredients",
-        //     title: "Ingredients",
-        //     ingredients: editableRecipe!.ingredients!.map((ing) => ({
-        //       _type: "recipeIngredient",
-        //       name: ing.name,
-        //       amount: ing.amount,
-        //       unit: ing.unit,
-        //       comment: ing.comment || undefined,
-        //     })),
-        //   },
-        // ],
-        // groupedInstructions: [
-        //   {
-        //     _type: "recipeGroupedInstructions",
-        //     title: "Instructions",
-        //     instructions: editableRecipe!.instructions!.map((inst) => ({
-        //       _type: "recipeInstruction",
-        //       text: inst.text,
-        //       order: inst.order,
-        //     })),
-        //   },
-        // ],
       };
 
       const result = await createRecipe(recipe);
@@ -322,7 +296,7 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
   };
 
   const handlePreview = () => {
-    console.log("handlePreview", { value });
+    // console.log("handlePreview", { value });
     console.log("value", JSON.stringify(value, null, 2));
     try {
       // TODO handle recipe and preview progression

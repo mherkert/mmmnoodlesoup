@@ -1,5 +1,5 @@
 import React from "react";
-import { Recipe } from "../components/recipe/Recipe";
+import { Recipe as RecipeComponent } from "../components/recipe/Recipe";
 import { graphql, PageProps } from "gatsby";
 import { Recipe as RecipeType } from "../data/types";
 import { useEffect } from "react";
@@ -26,7 +26,7 @@ const RecipePage = ({
     };
   }, []);
 
-  return <Recipe recipe={recipe} />;
+  return <RecipeComponent recipe={recipe} />;
 };
 
 export default RecipePage;

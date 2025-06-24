@@ -35,8 +35,9 @@ const config: GatsbyConfig = {
       options: {
         projectId: "04qgrpgb", // TODO: consider changing name in sanity.io
         dataset: "production",
-        watchMode: true, // only dev mode
+        watchMode: process.env.NODE_ENV === "development", // only dev mode
         apiVersion: "2021-03-25",
+        useCdn: process.env.NODE_ENV === "production", // Only use CDN in production
         // token: process.env.GATSBY_SANITY_TOKEN, // Removed to prevent exposure in build
       },
     },
