@@ -1,4 +1,6 @@
-import { createClient } from "@sanity/client";
+import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import createClient from "@sanity/client";
+import { NewRecipe } from "../../src/data/types";
 
 // Create Sanity client with authentication
 const sanityClient = createClient({
@@ -9,7 +11,16 @@ const sanityClient = createClient({
   token: process.env.SANITY_TOKEN,
 });
 
-export const handler = async (event) => {
+interface WebhookResponse {
+  statusCode: number;
+  body: string;
+  headers?: Record<string, string>;
+}
+
+export const handler: Handler = async (
+  event: HandlerEvent,
+  context: HandlerContext
+): Promise<WebhookResponse> => {
   // Only allow POST requests
   if (event.httpMethod !== "POST") {
     return {
@@ -20,7 +31,7 @@ export const handler = async (event) => {
 
   try {
     // Parse the request body
-    const recipeData = JSON.parse(event.body);
+    const recipeData: NewRecipe = JSON.parse(event.body || "{}");
 
     // Validate required fields
     if (!recipeData.title || !recipeData.slug) {
@@ -50,11 +61,14 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("Error creating recipe:", error);
 
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: "Failed to create recipe",
-        details: error.message,
+        details: errorMessage,
       }),
     };
   }

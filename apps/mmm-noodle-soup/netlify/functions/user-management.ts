@@ -1,4 +1,5 @@
-import { createClient } from "@sanity/client";
+import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
+import createClient from "@sanity/client";
 
 // Create Sanity client with authentication
 const sanityClient = createClient({
@@ -9,7 +10,28 @@ const sanityClient = createClient({
   token: process.env.SANITY_TOKEN,
 });
 
-export const handler = async (event) => {
+interface UserData {
+  email: string;
+  name: string;
+  image?: string;
+  role?: string;
+}
+
+interface RequestBody {
+  action: "create" | "update-auth0-ids" | "get-by-email";
+  userData: UserData | { userId: string; auth0Id: string } | { email: string };
+}
+
+interface WebhookResponse {
+  statusCode: number;
+  body: string;
+  headers?: Record<string, string>;
+}
+
+export const handler: Handler = async (
+  event: HandlerEvent,
+  context: HandlerContext
+): Promise<WebhookResponse> => {
   // Only allow POST requests
   if (event.httpMethod !== "POST") {
     return {
@@ -19,15 +41,17 @@ export const handler = async (event) => {
   }
 
   try {
-    const { action, userData } = JSON.parse(event.body);
+    const { action, userData }: RequestBody = JSON.parse(event.body || "{}");
 
     switch (action) {
       case "create":
-        return await createUser(userData);
+        return await createUser(userData as UserData);
       case "update-auth0-ids":
-        return await updateUserAuth0Ids(userData.userId, userData.auth0Id);
+        const updateData = userData as { userId: string; auth0Id: string };
+        return await updateUserAuth0Ids(updateData.userId, updateData.auth0Id);
       case "get-by-email":
-        return await getUserByEmail(userData.email);
+        const emailData = userData as { email: string };
+        return await getUserByEmail(emailData.email);
       default:
         return {
           statusCode: 400,
@@ -37,17 +61,20 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("Error in user management:", error);
 
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: "Failed to process user request",
-        details: error.message,
+        details: errorMessage,
       }),
     };
   }
 };
 
-async function createUser(userData) {
+async function createUser(userData: UserData): Promise<WebhookResponse> {
   const result = await sanityClient.create({
     _type: "user",
     ...userData,
@@ -62,7 +89,10 @@ async function createUser(userData) {
   };
 }
 
-async function updateUserAuth0Ids(userId, auth0Id) {
+async function updateUserAuth0Ids(
+  userId: string,
+  auth0Id: string
+): Promise<WebhookResponse> {
   const user = await sanityClient.getDocument(userId);
   if (!user) {
     return {
@@ -91,7 +121,7 @@ async function updateUserAuth0Ids(userId, auth0Id) {
   };
 }
 
-async function getUserByEmail(email) {
+async function getUserByEmail(email: string): Promise<WebhookResponse> {
   const user = await sanityClient.fetch(
     `*[_type == "user" && email == $email][0]`,
     { email }
