@@ -374,5 +374,51 @@ describe("transform utility", () => {
         "Wasser"
       );
     });
+
+    it("should throw an error if the duration is not a number", () => {
+      const slateValue: Descendant[] = [
+        {
+          type: "durationPreparation",
+          text: "not a number" ,
+        },
+      ];
+      expect(() => slateToRecipe(slateValue)).toThrow(
+        "Failed to convert preparation duration to number."
+      );
+    });
+
+    it("should throw an error if the servings count is not a number", () => {
+      const slateValue: Descendant[] = [
+        {
+          type: "servingsCount",
+          text: "not a number",
+        },
+      ];
+      expect(() => slateToRecipe(slateValue)).toThrow(
+        "Failed to convert servings count to number."
+      );
+    });
+
+    it("should throw an error if the amount is not a number", () => {
+      const slateValue: Descendant[] = [
+        {
+          type: "ingredients",
+          children: [
+            {
+              type: "paragraph",
+              children: [
+                {
+                  type: "ingredientsAmount",
+                  text: "not a number",
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      expect(() => slateToRecipe(slateValue)).toThrow(
+        "Failed to convert amount to number."
+      );
+    });
   });
 });

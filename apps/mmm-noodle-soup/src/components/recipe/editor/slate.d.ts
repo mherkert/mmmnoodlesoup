@@ -51,6 +51,8 @@ type DurationPreparationText = { type: "durationPreparation"; text: string };
 type DurationWaitingText = { type: "durationWaiting"; text: string };
 type DurationCookingText = { type: "durationCooking"; text: string };
 
+type HasText = { text: string };
+
 type CustomElement =
   | ParagraphElement
   | TitleElement

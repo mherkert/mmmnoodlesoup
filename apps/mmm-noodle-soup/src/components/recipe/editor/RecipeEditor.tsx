@@ -43,6 +43,7 @@ import {
 import { Stepper } from "./Stepper";
 import { useAuth } from "../../../store/authStore";
 import { navigate } from "gatsby";
+import { ValidationError } from "./utils/validate";
 
 type RecipeEditorProps = {
   recipe?: RecipeType;
@@ -68,6 +69,7 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
 
   const [editor] = useState(() => withReact(withHistory(createEditor())));
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [step, setStep] = useState<"preview" | "edit">("edit");
   const [editableRecipe, setEditableRecipe] = useState<
     EditableRecipe | undefined
@@ -296,23 +298,22 @@ export const RecipeEditor = ({ recipe }: RecipeEditorProps) => {
   };
 
   const handlePreview = () => {
-    // console.log("handlePreview", { value });
-    console.log("value", JSON.stringify(value, null, 2));
+    console.debug("previewing recipe", JSON.stringify(value, null, 2));
     try {
       // TODO handle recipe and preview progression
       const editableRecipe = slateToRecipe(value);
       editableRecipe._createdAt = new Date().toISOString();
-      // editableRecipe.slug = await generateUniqueSlug(editableRecipe.title);
-      // console.log("recipe preview", { editableRecipe });
       setEditableRecipe(editableRecipe);
       setStep("preview");
       setValidationError(null);
-    } catch (error) {
-      console.error("error", { error });
-      // TODO: handle validation errors
-      setValidationError(
-        error instanceof Error ? error.message : "Unknown error"
-      );
+    } catch (error: unknown) {
+      // TODO: handle errors
+      if (error instanceof ValidationError) {
+        setValidationError(error.message);
+      } else {
+        console.error("error", { error });
+        setError("Unknown error");
+      }
     }
   };
 

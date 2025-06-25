@@ -42,8 +42,7 @@ import {
   InstructionsElement,
   IngredientsElement,
 } from "../slate";
-import { validateRecipe } from "./validate";
-import { safeNumber } from "./validate";
+import { getValidNumber } from "./validate";
 
 export const recipeToSlate = (recipe: Recipe): Descendant[] => {
   const slate: Descendant[] = [];
@@ -295,45 +294,27 @@ class RecipeNodeVisitor implements NodeVisitor {
     node: DurationPreparationText,
     context: RecipeBuilder
   ): void {
-    const result = safeNumber(node.text);
-    if (result.kind === "success") {
-      context.setDurationPreparation(result.value);
-    } else {
-      throw new Error("Failed to convert preparation duration to number.");
-    }
+    context.setDurationPreparation(
+      getValidNumber(node, "preparation duration")
+    );
   }
 
   visitDurationWaiting(
     node: DurationWaitingText,
     context: RecipeBuilder
   ): void {
-    const result = safeNumber(node.text);
-    if (result.kind === "success") {
-      context.setDurationWaiting(result.value);
-    } else {
-      throw new Error("Failed to convert waiting duration to number.");
-    }
+    context.setDurationWaiting(getValidNumber(node, "waiting duration"));
   }
 
   visitDurationCooking(
     node: DurationCookingText,
     context: RecipeBuilder
   ): void {
-    const result = safeNumber(node.text);
-    if (result.kind === "success") {
-      context.setDurationCooking(result.value);
-    } else {
-      throw new Error("Failed to convert cooking duration to number.");
-    }
+    context.setDurationCooking(getValidNumber(node, "cooking duration"));
   }
 
   visitServingsCount(node: ServingsCountText, context: RecipeBuilder): void {
-    const result = safeNumber(node.text);
-    if (result.kind === "success") {
-      context.setServingsCount(result.value);
-    } else {
-      throw new Error("Failed to convert servings count to number.");
-    }
+    context.setServingsCount(getValidNumber(node, "servings count"));
   }
 
   visitInstructions(node: InstructionsElement, context: RecipeBuilder): void {
@@ -360,18 +341,18 @@ class RecipeNodeVisitor implements NodeVisitor {
       const amountNode = node.children.find(
         (node: Descendant) => node.type === IngredientsAmountType
       );
-      const result = amountNode ? safeNumber(amountNode.text) : undefined;
-      if (result && result.kind === "failure") {
-        throw new Error("Failed to convert amount to number.");
-      }
+      const result = amountNode
+        ? getValidNumber(amountNode, "amount")
+        : undefined;
       return {
-        amount: result ? result.value : undefined,
+        amount: result,
         unit: node.children.find(
           (node: Descendant) => node.type === IngredientsUnitType
         )?.text,
         name:
-          node.children.find((node: Descendant) => node.type === IngredientsNameType)
-            ?.text || "",
+          node.children.find(
+            (node: Descendant) => node.type === IngredientsNameType
+          )?.text || "",
         comment: node.children.find(
           (node: Descendant) => node.type === IngredientsCommentType
         )?.text,
@@ -413,6 +394,7 @@ export const slateToRecipe = (slate: Descendant[]): EditableRecipe => {
   const context = new RecipeBuilder();
   const queue: Descendant[] = [...slate];
 
+  // using breadth first search to traverse the slate data structure
   while (queue.length > 0) {
     const currentNode = queue.shift()!;
 

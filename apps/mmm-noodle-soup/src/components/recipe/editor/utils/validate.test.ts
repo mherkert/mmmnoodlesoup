@@ -1,4 +1,9 @@
-import { nonEmptyString, safeNumber, validateRecipe } from "./validate";
+import {
+  nonEmptyString,
+  safeNumber,
+  getValidNumber,
+  validateRecipe,
+} from "./validate";
 
 describe("validate", () => {
   describe("validateRecipe", () => {
@@ -63,6 +68,18 @@ describe("validate", () => {
         kind: "success",
         value: 123,
       });
+    });
+  });
+
+  describe("validateNumber", () => {
+    it("should return a failure if the value is not a number", () => {
+      expect(() => getValidNumber({ text: "not a number" }, "test")).toThrow(
+        "Failed to convert test to number."
+      );
+    });
+
+    it("should return a success if the value is a number", () => {
+      expect(getValidNumber({ text: "123" }, "test")).toEqual(123);
     });
   });
 
