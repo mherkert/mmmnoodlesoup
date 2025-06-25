@@ -19,7 +19,7 @@ export const sanityClientDev = createClient({
   // No token needed for public read access
 });
 
-// Create Sanity client for mutations (with credentials)
+// Create Sanity client for mutations (with credentials) - only for development
 export const sanityClientWithAuth = createClient({
   projectId: "04qgrpgb",
   dataset: "production",
@@ -67,17 +67,42 @@ export const generateUniqueSlug = async (title: string): Promise<string> => {
   return slug;
 };
 
-// Recipe creation function - uses authenticated client
+// Recipe creation function - uses Netlify Function in production, direct call in development
 export const createRecipe = async (recipeData: NewRecipe) => {
-  try {
-    const result = await sanityClientWithAuth.create({
-      _type: "recipe",
-      ...recipeData,
-    });
-    return result;
-  } catch (error) {
-    console.error("Error creating recipe:", error);
-    throw error;
+  if (process.env.NODE_ENV === "development") {
+    // Use direct Sanity call in development
+    try {
+      const result = await sanityClientWithAuth.create({
+        _type: "recipe",
+        ...recipeData,
+      });
+      return result;
+    } catch (error) {
+      console.error("Error creating recipe:", error);
+      throw error;
+    }
+  } else {
+    // Use Netlify Function in production
+    try {
+      const response = await fetch("/.netlify/functions/create-recipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recipeData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create recipe");
+      }
+
+      const result = await response.json();
+      return result.recipe;
+    } catch (error) {
+      console.error("Error creating recipe:", error);
+      throw error;
+    }
   }
 };
 
@@ -95,42 +120,98 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-// Create user if doesn't exist - uses authenticated client
+// Create user if they don't exist - uses Netlify Function in production
 export const createUser = async (userData: any) => {
-  try {
-    const result = await sanityClientWithAuth.create({
-      _type: "user",
-      ...userData,
-    });
-    return result;
-  } catch (error) {
-    console.error("Error creating user:", error);
-    throw error;
+  if (process.env.NODE_ENV === "development") {
+    // Use direct Sanity call in development
+    try {
+      const result = await sanityClientWithAuth.create({
+        _type: "user",
+        ...userData,
+      });
+      return result;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw error;
+    }
+  } else {
+    // Use Netlify Function in production
+    try {
+      const response = await fetch("/.netlify/functions/user-management", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "create",
+          userData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create user");
+      }
+
+      const result = await response.json();
+      return result.user;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw error;
+    }
   }
 };
 
-// Update user's Auth0 IDs - uses authenticated client
+// Update user's Auth0 IDs - uses Netlify Function in production
 export const updateUserAuth0Ids = async (userId: string, auth0Id: string) => {
-  try {
-    const user = await sanityClientWithAuth.getDocument(userId);
-    if (!user) {
-      throw new Error("User not found");
+  if (process.env.NODE_ENV === "development") {
+    // Use direct Sanity call in development
+    try {
+      const user = await sanityClientWithAuth.getDocument(userId);
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const auth0Ids = user.auth0Ids || [];
+
+      if (!auth0Ids.includes(auth0Id)) {
+        await sanityClientWithAuth
+          .patch(userId)
+          .set({
+            auth0Ids: [...auth0Ids, auth0Id],
+          })
+          .commit();
+      }
+
+      return user;
+    } catch (error) {
+      console.error("Error updating user Auth0 IDs:", error);
+      throw error;
     }
+  } else {
+    // Use Netlify Function in production
+    try {
+      const response = await fetch("/.netlify/functions/user-management", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "update-auth0-ids",
+          userData: { userId, auth0Id },
+        }),
+      });
 
-    const auth0Ids = user.auth0Ids || [];
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update user");
+      }
 
-    if (!auth0Ids.includes(auth0Id)) {
-      await sanityClientWithAuth
-        .patch(userId)
-        .set({
-          auth0Ids: [...auth0Ids, auth0Id],
-        })
-        .commit();
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error updating user Auth0 IDs:", error);
+      throw error;
     }
-
-    return user;
-  } catch (error) {
-    console.error("Error updating user Auth0 IDs:", error);
-    throw error;
   }
 };
