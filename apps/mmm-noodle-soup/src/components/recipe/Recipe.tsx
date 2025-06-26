@@ -101,7 +101,7 @@ const RecipeFull = ({
             <span className="hidden md:inline whitespace-nowrap">
               on {formatDate(recipe._createdAt!)}
             </span>
-          </span>{" "}
+          </span>{" | "}
           {recipe.source && <Source source={recipe.source} />}
         </div>
       </Card.Footer>
