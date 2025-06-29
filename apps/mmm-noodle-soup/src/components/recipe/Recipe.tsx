@@ -84,14 +84,13 @@ const RecipeFull = ({
         </div>
       </Card.Header>
       <Card.Separator />
-      <Card.Content className="flex flex-col md:flex-row gap-4">
+      <Card.Content className="grid grid-cols-1 md:grid-cols-[minmax(200px,300px)_1fr] gap-4 w-full">
         <Ingredients
-          className="md:w-1/3"
           recipe={recipe}
           ingredientsMultiplier={ingredientsMultiplier}
           setIngredientsMultiplier={setIngredientsMultiplier}
         />
-        <Instructions className="md:w-2/3" recipe={recipe} />
+        <Instructions recipe={recipe} />
       </Card.Content>
       <Card.Separator />
       <Card.Footer>
@@ -101,7 +100,8 @@ const RecipeFull = ({
             <span className="hidden md:inline whitespace-nowrap">
               on {formatDate(recipe._createdAt!)}
             </span>
-          </span>{" | "}
+          </span>
+          {" | "}
           {recipe.source && <Source source={recipe.source} />}
         </div>
       </Card.Footer>
@@ -121,12 +121,12 @@ const RecipeMinimal = ({
   return (
     <div className="h-screen">
       <Ingredients
-        className="h-[50%] overflow-scroll border-b-2 border-primary-light"
+        className="h-[40%] overflow-scroll border-b-2 border-primary-light"
         recipe={recipe}
         ingredientsMultiplier={ingredientsMultiplier}
         setIngredientsMultiplier={setIngredientsMultiplier}
       />
-      <Instructions className="h-[50%] overflow-scroll" recipe={recipe} />
+      <Instructions className="h-[60%] overflow-scroll" recipe={recipe} />
     </div>
   );
 };

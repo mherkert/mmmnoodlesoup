@@ -77,14 +77,17 @@ export const Ingredients = ({
               <Heading level={3}>{ingredient.title}</Heading>
             )}
             <ul className="flex flex-col gap-1.5">
-              {ingredient.ingredients.map((ingredient) => (
-                <li key={ingredient.name} className="flex gap-2">
-                  <span className="font-bold min-w-24 inline-block">
+              {ingredient.ingredients.map((ingredient, index) => (
+                <li
+                  key={ingredient.name}
+                  className={`flex gap-2 ${index % 2 === 0 ? "bg-primary/20 px-0.5" : "px-0.5"} rounded-md justify-between`}
+                >
+                  <span className="font-bold inline-block">
                     {ingredient.amount &&
                       ingredient.amount * ingredientsMultiplier}{" "}
                     {ingredient.unit}
                   </span>
-                  <span>
+                  <span className="inline-block w-52">
                     {ingredient.name}
                     {ingredient.comment && `, ${ingredient.comment}`}
                   </span>
