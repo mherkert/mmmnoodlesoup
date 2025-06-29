@@ -82,12 +82,12 @@ export const Ingredients = ({
                   key={ingredient.name}
                   className={`flex gap-2 ${index % 2 === 0 ? "bg-primary/20 px-0.5" : "px-0.5"} rounded-md justify-between`}
                 >
-                  <span className="font-bold inline-block">
+                  <span className="font-bold inline-block w-[40%]">
                     {ingredient.amount &&
                       ingredient.amount * ingredientsMultiplier}{" "}
                     {ingredient.unit}
                   </span>
-                  <span className="inline-block w-52">
+                  <span className="inline-block w-[60%]">
                     {ingredient.name}
                     {ingredient.comment && `, ${ingredient.comment}`}
                   </span>
