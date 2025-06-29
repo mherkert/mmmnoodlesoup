@@ -26,7 +26,7 @@ export const RecipeNode = memo(
       return (
         <Component
           ref={ref as any}
-          className={` border border-solid rounded-tr-md rounded-br-md rounded-bl-md px-1 py-[2px] w-fit mt-7 relative ps-6 pe-6
+          className={`${Component === "span" ? "inline-block" : ""} border border-solid rounded-tr-md rounded-br-md rounded-bl-md px-1 py-[2px] w-fit mt-7 relative ps-6 pe-6
         ${colorSet.border}
         ${colorSet.background}
         `}
